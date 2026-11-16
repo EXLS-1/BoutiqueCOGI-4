@@ -1,12 +1,27 @@
 {
-  "name": "next-app",
-  "version": "0.1.0",
+  "name": "BOUTIQUE COGI",
+  "version": "0.1.2",
   "private": true,
+  "packageManager": "npm@10.9.3",
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "composer:deploy": "prisma deploy",
+    "composer:dev": "prisma dev",
+    "contract:emit": "prisma contract emit",
+    "db:init": "prisma db init",
+    "db:update": "prisma db update",
+    "db:verify": "prisma db verify",
+    "deploy": "npm run build && npm run composer:deploy",
+    "dev:composer": "npm run build && npm run composer:dev",
+    "migrate": "prisma db migrate",
+    "migration:plan": "prisma migration plan",
+    "migration:show": "prisma migration show",
+    "migration:status": "prisma migration status",
+    "skills:sync": "prisma skills sync || exit 0",
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -15,20 +30,34 @@
     "clsx": "latest",
     "lucide-react": "latest",
     "next": "16.4.6",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "@prisma/composer": "0.38.0",
+    "@prisma/composer-prisma-cloud": "0.38.0",
+    "@prisma/orm-postgres": "8.0.0-rc.23",
+    "alchemy": "2.0.0-beta.84",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "temporal-polyfill": "^1.0.6"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "4.3.3",
-    "@prisma/client": "latest",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
     "eslint-config-next": "16.4.6",
-    "prisma": "latest",
     "tailwindcss": "4.3.3",
     "tailwind-merge": "latest",
-    "typescript": "^5"
+    "@prisma/dev": "0.25.2",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^10.13.0",
+    "prisma": "8.0.0-rc.33",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "effect": "4.0.5",
+    "@effect/platform-bun": "4.0.5",
+    "@effect/platform-node": "4.0.5",
+    "@effect/platform-node-shared": "4.0.5",
+    "@effect/vitest": "4.0.5",
+    "@vitejs/devtools": "0.7.6"
   }
 }
