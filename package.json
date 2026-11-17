@@ -1,6 +1,6 @@
 {
-  "name": "BOUTIQUE COGI",
-  "version": "0.1.3",
+  "name": "BOUTIQUE_COGI",
+  "version": "0.1.4",
   "private": true,
   "packageManager": "npm@10.9.3",
   "type": "module",
