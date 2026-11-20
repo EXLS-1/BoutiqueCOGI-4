@@ -6,7 +6,9 @@ export default definePrismaConfig({
   orm: ormConfig({
     contract: "./prisma/contract.prisma",
     db: {
-      connection: process.env['DATABASE_URL']!,
+      // Utiliser la connexion directe (session mode, port 5432) pour les migrations
+      // Le pooler pgBouncer (port 6543) ne supporte pas les migrations
+      connection: process.env['DIRECT_URL'] ?? process.env['DATABASE_URL']!,
     },
   }),
 });

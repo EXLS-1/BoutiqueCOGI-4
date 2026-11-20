@@ -45,3 +45,6 @@ next-env.d.ts
 node_modules/
 dist/
 .env
+
+#
+prod-ca-2021.crt
