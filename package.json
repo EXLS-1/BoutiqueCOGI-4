@@ -1,6 +1,6 @@
 {
   "name": "BOUTIQUE_COGI",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "packageManager": "npm@10.9.3",
   "type": "module",
@@ -27,7 +27,7 @@
   "dependencies": {
     "@prisma/composer": "0.38.0",
     "@prisma/composer-prisma-cloud": "0.38.0",
-    "@prisma/orm-postgres": "^8.0.0-rc.24",
+    "@prisma/orm-postgres": "8.0.0-rc.23",
     "@supabase/server": "^1.9.2",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
@@ -47,9 +47,9 @@
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "eslint": "^10.13.0",
+    "eslint": "^9.15.0",
     "eslint-config-next": "16.4.6",
-    "prisma": "8.0.0-rc.24",
+    "prisma": "8.0.0-rc.23",
     "tailwind-merge": "latest",
     "tailwindcss": "4.3.3",
     "tsx": "^4.23.15",
@@ -61,6 +61,10 @@
     "@effect/platform-node": "4.0.5",
     "@effect/platform-node-shared": "4.0.5",
     "@effect/vitest": "4.0.5",
-    "@vitejs/devtools": "0.7.6"
+    "@vitejs/devtools": "0.7.6",
+    "eslint": "^9.15.0",
+    "@prisma/orm-toolchain": "8.0.0-rc.23",
+    "@prisma/orm-postgres": "8.0.0-rc.23",
+    "prisma": "8.0.0-rc.23"
   }
 }
