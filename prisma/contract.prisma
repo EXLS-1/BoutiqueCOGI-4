@@ -1,25 +1,2154 @@
 // use prisma-8
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String?
-  name      String?
-  posts     Post[]
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @onCreate(now()) @onUpdate(now()) @map("updated_at")
 
-  @@map("users")
-}
+namespace public {
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int      @map("author_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @onCreate(now()) @onUpdate(now()) @map("updated_at")
+  // ==========================================
+  // AUTHENTIFICATION & SESSIONS
+  // ==========================================
+  model User {
+    id                Uuid                @id(map: "user_pkey") @onCreate(uuid(7))
+    email             String              @unique(map: "user_email_key")
+    emailVerified     Boolean             @default(false)
+    emailVerifiedAt   DateTime?
+    name              String?
+    status            pg.enum(UserStatus) @default("ACTIVE")
+    image             String?
+    createdAt         DateTime            @default(now())
+    updatedAt         DateTime            @onCreate(now()) @onUpdate(now())
+    role              pg.enum(Role)       @default("USER")
 
-  @@map("posts")
+    sessions                  Session[]
+    accounts                  Account[]
+    deletedAccountRegistries  DeletedAccountRegistry[] @relation(name: "deleted_account_by", map: "deleted_account_by_userId_fkey")
+    restoredAccountRegistries DeletedAccountRegistry[] @relation(name: "deleted_account_restored_by", map: "deleted_account_restored_by_userId_fkey")
+    posts                     Post[]
+    orders                    Order[]
+    cart                      Cart?
+    abandonedCarts            AbandonedCart[]
+    couponUsages              CouponUsage[]
+    wishlist                  Wishlist?
+    dashboards                Dashboard[]
+    searchAnalytics           SearchAnalytics?
+    addresses                 Address[]
+    products                  Product[]                 @relation(name: "product_owner")
+    productViews              ProductView[]
+    reviews                   Review[]
+    createdProducts           Product[]                 @relation(name: "product_creator")
+    editedProducts            Product[]                 @relation(name: "product_editor")
+    publishedProducts         Product[]                 @relation(name: "product_publisher")
+    updater                   Stock[]                   @relation(name: "stock_updater")
+    stockMovements            StockMovement[]           @relation(name: "stock_movement_user")
+    inventoryTransactions     InventoryTransaction[]    @relation(name: "inventory_tx_user")
+    variantStockUpdates       VariantStock[]            @relation(name: "variant_stock_updater")
+    mediaUploads              Media[]                   @relation(name: "media_uploader")
+    idempotencyKeys           IdempotencyKey[]          @relation(name: "idempotency_user")
+    userSecurity              UserSecurity?
+    userPreferences           UserPreferences?
+    userQuota                 UserQuota?
+    createdAudits             UserAudit[]               @relation(name: "user_audit_created_by")
+    updatedAudits             UserAudit[]               @relation(name: "user_audit_updated_by")
+    deletedAudits             UserAudit[]               @relation(name: "user_audit_deleted_by")
+    roleAssignment            RoleAssignment?
+    twoFactor                 TwoFactor?
+    notifications             Notification[]
+    productStatusHistories    ProductStatusHistory[]    @relation(name: "product_status_history_user")
+
+    @@rls
+    @@map("user")
+  }
+
+  model UserSecurity {
+    id                  Uuid      @id(map: "user_security_pkey") @onCreate(uuid(7))
+    userId              Uuid      @unique(map: "user_security_userId_key")
+    twoFactorEnabled    Boolean   @default(false)
+    twoFactorSecret     Text?
+    adminPinHash        Text?
+    passwordChangedAt   DateTime?
+    forcePasswordChange Boolean   @default(false)
+    blockedAt           DateTime?
+    blockedUntil        DateTime?
+    blockReason         Text?
+    isBlocked           Boolean   @default(false)
+
+    user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_security_userId_fkey")
+    backupCodes TwoFactorBackupCode[] @relation(name: "user_security_backup_codes")
+
+    @@rls
+    @@map("user_security")
+  }
+
+  model UserPreferences {
+    id                Uuid                @id(map: "user_preferences_pkey") @onCreate(uuid(7))
+    userId            Uuid                @unique(map: "user_preferences_userId_key")
+    language          String              @default("fr")
+    theme             String              @default("light")
+    notifications     Json                @default(json`{}`)
+    preferredCurrency pg.enum(Currency)   @default("USD")
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_preferences_userId_fkey")
+
+    @@rls
+    @@map("user_preferences")
+  }
+
+  model UserQuota {
+    id           Uuid @id(map: "user_quota_pkey") @onCreate(uuid(7))
+    userId       Uuid @unique(map: "user_quota_userId_key")
+    productCount Int  @default(0)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_quota_userId_fkey")
+
+    @@rls
+    @@map("user_quota")
+  }
+
+  model UserAudit {
+    id          Uuid     @id(map: "user_audit_pkey") @onCreate(uuid(7))
+    userId      Uuid     @unique(map: "user_audit_userId_key")
+    deletedAt   DateTime?
+    isDeleted   Boolean  @default(false)
+    version     Int      @default(1)
+    createdById Uuid?
+    updatedById Uuid?
+    deletedById Uuid?
+
+    user      User  @relation(fields: [userId], references: [id], onDelete: Cascade, map: "user_audit_userId_fkey")
+    createdBy User? @relation(name: "user_audit_created_by", fields: [createdById], references: [id], map: "user_audit_createdById_fkey")
+    updatedBy User? @relation(name: "user_audit_updated_by", fields: [updatedById], references: [id], map: "user_audit_updatedById_fkey")
+    deletedBy User? @relation(name: "user_audit_deleted_by", fields: [deletedById], references: [id], map: "user_audit_deletedById_fkey")
+
+    @@rls
+    @@map("user_audit")
+  }
+
+  model Account {
+    id                    Uuid      @id(map: "account_pkey") @onCreate(uuid(7))
+    userId                Uuid
+    type                  String    @default("email")
+    providerId            String    @map("provider")
+    accountId             String    @map("providerAccountId")
+    version               Int       @default(1)
+    password              Text?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @onCreate(now()) @onUpdate(now())
+    refreshToken          Text?     @map("refresh_token")
+    refreshTokenExpiresAt DateTime?
+    accessToken           Text?     @map("access_token")
+    accessTokenExpiresAt  DateTime?
+    expiresAt             DateTime? @map("expires_at")
+    tokenType             String?   @map("token_type")
+    scope                 String?
+    idToken               Text?     @map("id_token")
+    sessionState          String?   @map("session_state")
+
+    user              User              @relation(fields: [userId], references: [id], onDelete: Cascade, map: "account_userId_fkey")
+    passwordHistories PasswordHistory[] @relation(name: "account_password_histories")
+
+    @@unique([providerId, accountId], map: "account_provider_accountId_key")
+    @@index([userId], name: "account_userId_idx")
+    @@rls
+    @@map("account")
+  }
+
+  model PasswordHistory {
+    id           Uuid     @id(map: "password_history_pkey") @onCreate(uuid(7))
+    accountId    Uuid
+    passwordHash Text
+    createdAt    DateTime @default(now())
+    expiresAt    DateTime?
+
+    account Account @relation(name: "account_password_histories", fields: [accountId], references: [id], onDelete: Cascade, map: "password_history_accountId_fkey")
+
+    @@index([accountId, createdAt], name: "password_history_accountId_createdAt_idx")
+    @@rls
+    @@map("password_history")
+  }
+
+  model PasswordPolicy {
+    id               String   @id(map: "password_policy_pkey") @onCreate(uuid(7))
+    minLength        Int      @default(12)
+    requireUppercase Boolean  @default(true)
+    requireLowercase Boolean  @default(true)
+    requireNumbers   Boolean  @default(true)
+    requireSpecial   Boolean  @default(true)
+    maxAge           Int?
+    historyCount     Int      @default(5)
+    isActive         Boolean  @default(true)
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("password_policy")
+  }
+
+  model Session {
+    id        String    @id(map: "session_pkey") @onCreate(uuid(7))
+    token     String    @unique(map: "session_token_key")
+    userId    Uuid
+    expiresAt DateTime
+    ipAddress String?
+    userAgent String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @onCreate(now()) @onUpdate(now())
+    lastUsedAt DateTime?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "session_userId_fkey")
+
+    @@index([userId], name: "session_userId_idx")
+    @@rls
+    @@map("session")
+  }
+
+  model TwoFactor {
+    id          Uuid                @id(map: "twofactor_pkey") @onCreate(uuid(7))
+    userId      Uuid                @unique(map: "twofactor_userId_key")
+    secret      Text
+    enabled     Boolean             @default(false)
+    createdAt   DateTime            @default(now())
+    updatedAt   DateTime            @onCreate(now()) @onUpdate(now())
+
+    user        User                @relation(fields: [userId], references: [id], onDelete: Cascade, map: "twofactor_userId_fkey")
+    backupCodes TwoFactorBackupCode[] @relation(name: "twofactor_backup_codes")
+
+    @@rls
+    @@map("twofactor")
+  }
+
+  model TwoFactorBackupCode {
+    id             Uuid       @id(map: "twofactor_backup_code_pkey") @onCreate(uuid(7))
+    twoFactorId    Uuid
+    userSecurityId Uuid
+    used           Boolean    @default(false)
+    codeHash       String
+    usedAt         DateTime?
+    createdAt      DateTime   @default(now())
+
+    twoFactor  TwoFactor    @relation(name: "twofactor_backup_codes", fields: [twoFactorId], references: [id], onDelete: Cascade, map: "twofactor_backup_code_twoFactorId_fkey")
+    userSecurity UserSecurity @relation(name: "user_security_backup_codes", fields: [userSecurityId], references: [id], onDelete: Cascade, map: "twofactor_backup_code_userSecurityId_fkey")
+
+    @@index([userSecurityId], name: "twofactor_backup_code_userSecurityId_idx")
+    @@rls
+    @@map("twofactor_backup_code")
+  }
+
+  model TwoFactorAttempt {
+    id        Uuid     @id(map: "two_factor_attempt_pkey") @onCreate(uuid(7))
+    ipAddress String
+    success   Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    @@index([ipAddress, createdAt], name: "two_factor_attempt_ip_createdAt_idx")
+    @@rls
+    @@map("two_factor_attempt")
+  }
+
+  model Verification {
+    id           Uuid                   @id(map: "verification_pkey") @onCreate(uuid(7))
+    identifier   String
+    value        Text
+    type         pg.enum(VerificationType)
+    attemptCount Int                    @default(0)
+    expiresAt    DateTime
+    consumedAt   DateTime?
+    createdAt    DateTime               @default(now())
+    updatedAt    DateTime               @onCreate(now()) @onUpdate(now())
+
+    @@unique([identifier, type, value], map: "verification_identifier_type_value_key")
+    @@index([identifier], name: "verification_identifier_idx")
+    @@index([expiresAt], name: "verification_expiresAt_idx")
+    @@rls
+    @@map("verification")
+  }
+
+  model LoginAttempt {
+    id        Uuid     @id(map: "login_attempt_pkey") @onCreate(uuid(7))
+    email     String
+    ipAddress String
+    success   Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    @@index([ipAddress, createdAt], name: "login_attempt_ip_createdAt_idx")
+    @@index([email, createdAt], name: "login_attempt_email_createdAt_idx")
+    @@rls
+    @@map("login_attempt")
+  }
+
+  // ==========================================
+  // RBAC (RÔLES & PERMISSIONS)
+  // ==========================================
+  model RoleConfig {
+    id              String           @id(map: "role_config_pkey") @onCreate(uuid(7))
+    role            pg.enum(Role)    @unique(map: "role_config_role_key")
+    level           Int
+    parentId        String?
+    description     String
+    permissions     Json?            @default(json`{}`)
+    restrictions    Json?            @default(json`{}`)
+    isSystem        Boolean          @default(false)
+    isActive        Boolean          @default(true)
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @onCreate(now()) @onUpdate(now())
+    createdBy       String?
+    updatedBy       String?
+    blockedAt       DateTime?
+    blockedReason   String?
+    blockedBy       String?
+    unblockedAt     DateTime?
+    unblockedBy     String?
+    unblockedReason String?
+
+    parent          RoleConfig?      @relation(name: "role_config_hierarchy", fields: [parentId], references: [id], onDelete: SetNull, map: "role_config_parentId_fkey")
+    children        RoleConfig[]     @relation(name: "role_config_hierarchy")
+    rolePermissions RolePermission[] @relation(name: "role_config_permissions")
+    roleAssignments RoleAssignment[] @relation(name: "role_config_assignments")
+
+    @@index([level], name: "role_config_level_idx")
+    @@index([isActive], name: "role_config_isActive_idx")
+    @@index([isSystem], name: "role_config_isSystem_idx")
+    @@rls
+    @@map("role_config")
+  }
+
+  model RoleAssignment {
+    id             Uuid               @id(map: "role_assignment_pkey") @onCreate(uuid(7))
+    userId         Uuid               @unique(map: "role_assignment_userId_key")
+    roleId         String
+    isBlocked      Boolean            @default(false)
+    blockedReason  String?
+    blockedAt      DateTime?
+    blockedUntil   DateTime?
+    assignedBy     Uuid?
+    assignedAt     DateTime           @default(now())
+    lastVerifiedAt DateTime           @default(now())
+
+    user               User               @relation(fields: [userId], references: [id], onDelete: Cascade, map: "role_assignment_userId_fkey")
+    roleConfig         RoleConfig         @relation(name: "role_config_assignments", fields: [roleId], references: [id], onDelete: Restrict, map: "role_assignment_roleId_fkey")
+    permissionOverrides PermissionOverride[] @relation(name: "role_assignment_overrides")
+
+    @@index([roleId], name: "role_assignment_roleId_idx")
+    @@index([isBlocked], name: "role_assignment_isBlocked_idx")
+    @@rls
+    @@map("role_assignment")
+  }
+
+  model Permission {
+    id          String             @id(map: "permission_pkey") @onCreate(uuid(7))
+    code        String             @unique(map: "permission_code_key")
+    name        String
+    description String?
+    category    String
+    isDangerous Boolean            @default(false)
+
+    roles     RolePermission[]     @relation(name: "permission_roles")
+    overrides PermissionOverride[] @relation(name: "permission_overrides")
+
+    @@rls
+    @@map("permission")
+  }
+
+  model RolePermission {
+    id           Uuid       @id(map: "role_permission_pkey") @onCreate(uuid(7))
+    roleconfigId String
+    permissionId String
+
+    roleconfig RoleConfig @relation(name: "role_config_permissions", fields: [roleconfigId], references: [id], onDelete: Cascade, map: "role_permission_roleconfigId_fkey")
+    permission Permission @relation(name: "permission_roles", fields: [permissionId], references: [id], onDelete: Cascade, map: "role_permission_permissionId_fkey")
+
+    @@unique([roleconfigId, permissionId], map: "role_permission_roleconfigId_permissionId_key")
+    @@index([permissionId], name: "role_permission_permissionId_idx")
+    @@rls
+    @@map("role_permission")
+  }
+
+  model PermissionOverride {
+    id               Uuid       @id(map: "permission_override_pkey") @onCreate(uuid(7))
+    roleAssignmentId Uuid
+    permissionId     String
+    isGranted        Boolean
+    grantedBy        Uuid?
+    grantedAt        DateTime   @default(now())
+    expiresAt        DateTime?
+
+    roleAssignment RoleAssignment @relation(name: "role_assignment_overrides", fields: [roleAssignmentId], references: [id], onDelete: Cascade, map: "permission_override_roleAssignmentId_fkey")
+    permission     Permission     @relation(name: "permission_overrides", fields: [permissionId], references: [id], onDelete: Cascade, map: "permission_override_permissionId_fkey")
+
+    @@unique([roleAssignmentId, permissionId], map: "permission_override_roleAssignmentId_permissionId_key")
+    @@rls
+    @@map("permission_override")
+  }
+
+  // ==========================================
+  // PROFIL UTILISATEUR & ADRESSES
+  // ==========================================
+  model Address {
+    id        Uuid     @id(map: "address_pkey") @onCreate(uuid(7))
+    userId    Uuid
+    label     String?
+    street    String
+    commune   String
+    city      String   @default("Kinshasa")
+    country   String   @default("RDC")
+    phone     String
+    isDefault Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @onCreate(now()) @onUpdate(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "address_userId_fkey")
+
+    @@index([userId], name: "address_userId_idx")
+    @@rls
+    @@map("address")
+  }
+
+  // ==========================================
+  // CATALOGUE & PRODUITS
+  // ==========================================
+  model Catalog {
+    id         Uuid             @id(map: "catalog_pkey") @onCreate(uuid(7))
+    name       String
+    imageSrc   String?
+    imageAlt   String
+    isActive   Boolean          @default(true)
+    categoryId Uuid?
+
+    products CatalogProduct[] @relation(name: "catalog_products")
+    category Category?        @relation(name: "catalog_category", fields: [categoryId], references: [id], map: "catalog_categoryId_fkey")
+
+    @@rls
+    @@map("catalog")
+  }
+
+  model Category {
+    id                 String           @id(map: "category_pkey") @onCreate(uuid(7))
+    name               String           @unique(map: "category_name_key")
+    slug               String           @unique(map: "category_slug_key")
+    description        Text?
+    subtitle           String
+    image              String?
+    isNavigable        Boolean          @default(true)
+    managedByRoles     String[]         @default([])
+    requiredPermission String           @default("products:read")
+    minRoleLevel       Int              @default(6)
+    displayOrder       Int              @default(0)
+    OrderBy            String
+    parentId           String?
+    seoTitle           String?
+    seoDescription     String?
+    deletedAt          DateTime?
+    createdAt          DateTime         @default(now())
+    updatedAt          DateTime         @onCreate(now()) @onUpdate(now())
+
+    parent           Category?          @relation(name: "category_hierarchy", fields: [parentId], references: [id], map: "category_parentId_fkey")
+    children         Category[]        @relation(name: "category_hierarchy")
+    categoryProducts CategoryProduct[] @relation(name: "category_products")
+    products         Product[]         @relation(name: "product_categories")
+    catalogs         Catalog[]         @relation(name: "catalog_category")
+
+    @@index([parentId], name: "category_parentId_idx")
+    @@rls
+    @@map("category")
+  }
+
+  model CategoryProduct {
+    productId    String
+    categoryId   String
+    displayOrder Int @default(0)
+
+    product  Product  @relation(name: "product_category_products", fields: [productId], references: [id], onDelete: Cascade, map: "category_product_productId_fkey")
+    category Category @relation(name: "category_products", fields: [categoryId], references: [id], onDelete: Cascade, map: "category_product_categoryId_fkey")
+
+    @@id([productId, categoryId], map: "category_product_pkey")
+    @@index([categoryId], name: "category_product_categoryId_idx")
+    @@rls
+    @@map("category_product")
+  }
+
+  model CatalogProduct {
+    catalogId     Uuid
+    productId     String
+    priceOverride Decimal(precision: 10, scale: 2)?
+    isActive      Boolean  @default(true)
+
+    catalog Catalog @relation(name: "catalog_products", fields: [catalogId], references: [id], onDelete: Cascade, map: "catalog_product_catalogId_fkey")
+    product Product @relation(name: "product_catalogs", fields: [productId], references: [id], onDelete: Cascade, map: "catalog_product_productId_fkey")
+
+    @@id([catalogId, productId], map: "catalog_product_pkey")
+    @@index([productId], name: "catalog_product_productId_idx")
+    @@rls
+    @@map("catalog_product")
+  }
+
+  model Product {
+    id              String                 @id(map: "product_pkey") @onCreate(uuid(7))
+    name            String
+    sku             String                 @unique(map: "product_sku_key")
+    slug            String                 @unique(map: "product_slug_key")
+    description     Text
+    currency        pg.enum(Currency)      @default("USD")
+    productTypeId   String
+    categoryId      String?
+    userId          String
+    images          String[]
+    videoUrl        String?
+    isFeatured      Boolean                @default(false)
+    isArchived      Boolean                @default(false)
+    isActive        Boolean                @default(false)
+    isdeleted       Boolean                @default(false)
+    deletedAt       DateTime?
+    status          pg.enum(ProductStatus) @default("DRAFT")
+    scheduledAt     DateTime?
+    publishedAt     DateTime?
+    seoTitle        String?
+    seoDescription  Text?
+    taxClassId      String?
+    saleStart       DateTime?
+    saleEnd         DateTime?
+    soldCount       Int                    @default(0)
+    createdBy       String?
+    updatedBy       String?
+    publishedById   String?
+    createdAt       DateTime               @default(now())
+    updatedAt       DateTime               @onCreate(now()) @onUpdate(now())
+    couponId        String?
+
+    productType        ProductTypeConfig         @relation(name: "product_type_products", fields: [productTypeId], references: [id], onDelete: Restrict, map: "product_productTypeId_fkey")
+    category           Category?                 @relation(name: "product_categories", fields: [categoryId], references: [id], map: "product_categoryId_fkey")
+    user               User                      @relation(name: "product_owner", fields: [userId], references: [id], map: "product_userId_fkey")
+    catalogs           CatalogProduct[]          @relation(name: "product_catalogs")
+    creator            User?                     @relation(name: "product_creator", fields: [createdBy], references: [id], map: "product_createdBy_fkey")
+    editor             User?                     @relation(name: "product_editor", fields: [updatedBy], references: [id], map: "product_updatedBy_fkey")
+    publisher          User?                     @relation(name: "product_publisher", fields: [publishedById], references: [id], map: "product_publishedById_fkey")
+    taxClass           TaxClass?                 @relation(name: "product_tax_classes", fields: [taxClassId], references: [id], map: "product_taxClassId_fkey")
+    statusHistory      ProductStatusHistory[]    @relation(name: "product_status_history")
+    variants           ProductVariant[]          @relation(name: "product_variants")
+    wishlistItems      WishlistItem[]            @relation(name: "wishlist_items")
+    productImages      ProductImage[]            @relation(name: "product_images")
+    productTags        ProductTag[]              @relation(name: "product_tags")
+    attributeValues    ProductAttributeValue[]   @relation(name: "product_attribute_values")
+    productReviews     Review[]                  @relation(name: "product_reviews")
+    inventoryLedger    InventoryTransaction[]    @relation(name: "inventory_ledger")
+    inventorySnapshots InventorySnapshot[]       @relation(name: "inventory_snapshots")
+    availabilityProjection Product_Availability_Projection? @relation(name: "product_availability")
+    stock              Stock?                    @relation(name: "product_stock")
+    coupon             Coupon?                   @relation(name: "coupon_products", fields: [couponId], references: [id], map: "product_couponId_fkey")
+    productViews       ProductView[]             @relation(name: "product_views")
+    categoryProducts   CategoryProduct[]         @relation(name: "product_category_products")
+    orderItems         OrderItem[]               @relation(name: "order_items")
+
+    @@index([createdBy], name: "product_createdBy_idx")
+    @@index([updatedBy], name: "product_updatedBy_idx")
+    @@index([publishedById], name: "product_publishedById_idx")
+    @@index([status, scheduledAt], name: "product_status_scheduledAt_idx")
+    @@index([productTypeId], name: "product_productTypeId_idx")
+    @@index([status, isActive], name: "product_status_isActive_idx")
+    @@index([categoryId], name: "product_categoryId_idx")
+    @@index([createdAt], name: "product_createdAt_idx")
+    @@index([isArchived, isdeleted, status], name: "product_admin_filters_idx")
+    @@rls
+    @@map("product")
+  }
+
+  model ProductStatusHistory {
+    id          Uuid                   @id(map: "product_status_history_pkey") @onCreate(uuid(7))
+    productId   String
+    oldStatus   pg.enum(ProductStatus)
+    newStatus   pg.enum(ProductStatus)
+    reason      Text?
+    changedById String?
+    changedAt   DateTime               @default(now())
+
+    product Product @relation(name: "product_status_history", fields: [productId], references: [id], onDelete: Cascade, map: "product_status_history_productId_fkey")
+    changedBy User? @relation(name: "product_status_history_user", fields: [changedById], references: [id], onDelete: SetNull, map: "product_status_history_changedById_fkey")
+
+    @@index([productId, changedAt], name: "product_status_history_productId_changedAt_idx")
+    @@rls
+    @@map("product_status_history")
+  }
+
+  model ProductVariant {
+    id          Uuid     @id(map: "product_variant_pkey") @onCreate(uuid(7))
+    productId   String
+    sku         String   @unique(map: "product_variant_sku_key")
+    attributes  Json     @default(json`{}`)
+    priceOffset Int      @default(0)
+    createdAt   DateTime @default(now())
+    isActive    Boolean  @default(true)
+
+    product               Product                @relation(name: "product_variants", fields: [productId], references: [id], onDelete: Cascade, map: "product_variant_productId_fkey")
+    orderItems            OrderItem[]            @relation(name: "order_item_variants")
+    cartItems             CartItem[]             @relation(name: "cart_items")
+    inventoryTransactions InventoryTransaction[] @relation(name: "variant_inventory_tx")
+    inventorySnapshots    InventorySnapshot[]    @relation(name: "variant_inventory_snapshots")
+    stockReservations     StockReservation[]     @relation(name: "variant_stock_reservations")
+    variantStocks         VariantStock[]         @relation(name: "variant_stocks")
+
+    @@index([productId], name: "product_variant_productId_idx")
+    @@rls
+    @@map("product_variant")
+  }
+
+  model ProductImage {
+    id        Uuid    @id(map: "product_image_pkey") @onCreate(uuid(7))
+    productId String
+    url       String
+    alt       String?
+    position  Int     @default(0)
+
+    product Product @relation(name: "product_images", fields: [productId], references: [id], onDelete: Cascade, map: "product_image_productId_fkey")
+
+    @@index([productId, position], name: "product_image_productId_position_idx")
+    @@rls
+    @@map("product_image")
+  }
+
+  model Tag {
+    id   String @id(map: "tag_pkey") @onCreate(uuid(7))
+    name String @unique(map: "tag_name_key")
+    slug String @unique(map: "tag_slug_key")
+
+    products ProductTag[] @relation(name: "tag_products")
+
+    @@rls
+    @@map("tag")
+  }
+
+  model ProductTag {
+    productId String
+    tagId     String
+
+    product Product @relation(name: "product_tags", fields: [productId], references: [id], onDelete: Cascade, map: "product_tag_productId_fkey")
+    tag     Tag     @relation(name: "tag_products", fields: [tagId], references: [id], onDelete: Cascade, map: "product_tag_tagId_fkey")
+
+    @@id([productId, tagId], map: "product_tag_pkey")
+    @@rls
+    @@map("product_tag")
+  }
+
+  model ProductAttribute {
+    id   String @id(map: "product_attribute_pkey") @onCreate(uuid(7))
+    name String @unique(map: "product_attribute_name_key")
+    type String
+
+    values ProductAttributeValue[] @relation(name: "attribute_values")
+
+    @@rls
+    @@map("product_attribute")
+  }
+
+  model ProductAttributeValue {
+    id          Uuid             @id(map: "product_attribute_value_pkey") @onCreate(uuid(7))
+    productId   String
+    attributeId String
+    value       String
+
+    product   Product          @relation(name: "product_attribute_values", fields: [productId], references: [id], onDelete: Cascade, map: "product_attribute_value_productId_fkey")
+    attribute ProductAttribute @relation(name: "attribute_values", fields: [attributeId], references: [id], onDelete: Cascade, map: "product_attribute_value_attributeId_fkey")
+
+    @@unique([productId, attributeId], map: "product_attribute_value_productId_attributeId_key")
+    @@rls
+    @@map("product_attribute_value")
+  }
+
+  model Review {
+    id                 Uuid     @id(map: "review_pkey") @onCreate(uuid(7))
+    productId          String
+    userId             String
+    rating             Int2
+    comment            Text?
+    isVerifiedPurchase Boolean  @default(false)
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @onCreate(now()) @onUpdate(now())
+
+    product Product @relation(name: "product_reviews", fields: [productId], references: [id], onDelete: Cascade, map: "review_productId_fkey")
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "review_userId_fkey")
+
+    @@unique([productId, userId], map: "review_productId_userId_key")
+    @@index([productId, rating], name: "review_productId_rating_idx")
+    @@rls
+    @@map("review")
+  }
+
+  model Product_Availability_Projection {
+    productId   String   @id(map: "product_availability_projection_pkey") @onCreate(uuid(7))
+    isAvailable Boolean  @default(false)
+    updatedAt   DateTime @onCreate(now()) @onUpdate(now())
+
+    product Product @relation(name: "product_availability", fields: [productId], references: [id], onDelete: Cascade, map: "product_availability_projection_productId_fkey")
+
+    @@rls
+    @@map("product_availability_projection")
+  }
+
+  model ProductPrice {
+    id             Uuid                     @id(map: "product_price_pkey") @onCreate(uuid(7))
+    productId      String
+    currency       String                   @default("USD")
+    amount         Decimal
+    compareAtPrice Int?
+    country        String?
+    region         String?
+    startsAt       DateTime?
+    endsAt         DateTime?
+
+    product Product @relation(fields: [productId], references: [id], onDelete: Cascade, map: "product_price_productId_fkey")
+
+    @@index([productId, startsAt, endsAt], name: "product_price_productId_dates_idx")
+    @@index([country, region], name: "product_price_country_region_idx")
+    @@rls
+    @@map("product_price")
+  }
+
+  model ProductTypeConfig {
+    id                       String   @id(map: "product_type_config_pkey") @onCreate(uuid(7))
+    type                     String   @unique(map: "product_type_config_type_key")
+    label                    String
+    description              String?
+    whoCanCreate             String[]
+    whoCanEdit               String[]
+    whoCanDelete             String[]
+    requiredPermissionCreate String
+    requiredPermissionEdit   String
+    requiredPermissionDelete String
+    minRoleLevelCreate       Int
+    minRoleLevelEdit         Int
+    minRoleLevelDelete       Int
+    maxVariants              Int
+    requiresApproval         Boolean  @default(false)
+    isDefault                Boolean  @default(false)
+    isActive                 Boolean  @default(true)
+    createdAt                DateTime @default(now())
+    updatedAt                DateTime @onCreate(now()) @onUpdate(now())
+
+    products Product[] @relation(name: "product_type_products")
+
+    @@index([type], name: "product_type_config_type_idx")
+    @@rls
+    @@map("product_type_config")
+  }
+
+  model ProductView {
+    id        Uuid     @id(map: "product_views_pkey") @onCreate(uuid(7))
+    productId String
+    sessionId String?
+    userId    Uuid?
+    viewedAt  DateTime @default(now())
+
+    product Product @relation(name: "product_views", fields: [productId], references: [id], onDelete: Cascade, map: "product_views_productId_fkey")
+    user    User?   @relation(fields: [userId], references: [id], onDelete: SetNull, map: "product_views_userId_fkey")
+
+    @@index([productId, viewedAt], name: "product_views_productId_viewedAt_idx")
+    @@rls
+    @@map("product_views")
+  }
+
+  model VariantAttributeConfig {
+    id              Uuid     @id(map: "variant_attribute_config_pkey") @onCreate(uuid(7))
+    attribute       String   @unique(map: "variant_attribute_config_attribute_key")
+    label           String
+    type            String
+    isRequired      Boolean  @default(false)
+    whoCanConfigure String[]
+    minRoleLevel    Int
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @onCreate(now()) @onUpdate(now())
+
+    @@index([attribute], name: "variant_attribute_config_attribute_idx")
+    @@rls
+    @@map("variant_attribute_config")
+  }
+
+  // ==========================================
+  // INVENTAIRE & STOCK
+  // ==========================================
+  model Stock {
+    id             Uuid            @id(map: "stocks_pkey") @onCreate(uuid(7))
+    productId      String          @unique(map: "stocks_productId_key")
+    quantity       Int             @default(0)
+    reserved       Int             @default(0)
+    alertThreshold Int             @default(10)
+    warehouse      String?
+    lastMovementAt DateTime        @default(now())
+    updatedAt      DateTime        @onCreate(now()) @onUpdate(now())
+    updatedBy      String?
+
+    product   Product         @relation(name: "product_stock", fields: [productId], references: [id], onDelete: Cascade, map: "stocks_productId_fkey")
+    updater   User?           @relation(name: "stock_updater", fields: [updatedBy], references: [id], onDelete: SetNull, map: "stocks_updatedBy_fkey")
+    movements StockMovement[] @relation(name: "stock_movements")
+
+    @@index([productId], name: "stocks_productId_idx")
+    @@index([quantity], name: "stocks_quantity_idx")
+    @@index([warehouse], name: "stocks_warehouse_idx")
+    @@rls
+    @@map("stocks")
+  }
+
+  model VariantStock {
+    id             Uuid           @id(map: "variant_stock_pkey") @onCreate(uuid(7))
+    variantId      String
+    warehouseId    String?
+    quantity       Int            @default(0)
+    reserved       Int            @default(0)
+    alertThreshold Int            @default(10)
+    lastMovementAt DateTime       @default(now())
+    updatedBy      String?
+    createdAt      DateTime       @default(now())
+    updatedAt      DateTime       @onCreate(now()) @onUpdate(now())
+
+    variant   ProductVariant  @relation(name: "variant_stocks", fields: [variantId], references: [id], onDelete: Cascade, map: "variant_stock_variantId_fkey")
+    warehouse Warehouse?      @relation(name: "warehouse_variant_stocks", fields: [warehouseId], references: [id], onDelete: SetNull, map: "variant_stock_warehouseId_fkey")
+    updater   User?           @relation(name: "variant_stock_updater", fields: [updatedBy], references: [id], onDelete: SetNull, map: "variant_stock_updatedBy_fkey")
+    movements StockMovement[] @relation(name: "variant_stock_movements")
+
+    @@unique([variantId, warehouseId], map: "variant_stock_variantId_warehouseId_key")
+    @@index([variantId], name: "variant_stock_variantId_idx")
+    @@index([warehouseId], name: "variant_stock_warehouseId_idx")
+    @@rls
+    @@map("variant_stock")
+  }
+
+  model StockMovement {
+    id             Uuid                  @id(map: "stock_movements_pkey") @onCreate(uuid(7))
+    stockId        String
+    type           pg.enum(StockMovementType)
+    quantity       Int
+    delta          Int
+    reason         String?
+    orderId        String?
+    userId         String?
+    variantStockId String?
+    createdAt      DateTime              @default(now())
+
+    stock        Stock         @relation(name: "stock_movements", fields: [stockId], references: [id], onDelete: Cascade, map: "stock_movements_stockId_fkey")
+    variantStock VariantStock? @relation(name: "variant_stock_movements", fields: [variantStockId], references: [id], onDelete: SetNull, map: "stock_movements_variantStockId_fkey")
+    user         User?         @relation(name: "stock_movement_user", fields: [userId], references: [id], onDelete: SetNull, map: "stock_movements_userId_fkey")
+    order        Order?        @relation(name: "order_stock_movements", fields: [orderId], references: [id], onDelete: SetNull, map: "stock_movements_orderId_fkey")
+
+    @@index([stockId], name: "stock_movements_stockId_idx")
+    @@index([variantStockId], name: "stock_movements_variantStockId_idx")
+    @@index([type], name: "stock_movements_type_idx")
+    @@index([orderId], name: "stock_movements_orderId_idx")
+    @@index([createdAt], name: "stock_movements_createdAt_idx")
+    @@rls
+    @@map("stock_movements")
+  }
+
+  model InventoryTransaction {
+    id              Uuid             @id(map: "inventory_transaction_pkey") @onCreate(uuid(7))
+    productId       String
+    variantId       String?
+    quantity        Int
+    reason          pg.enum(TransactionType)
+    referenceId     String?
+    warehouseId     String?
+    performedBy     String?
+    createdAt       DateTime         @default(now())
+    updatedAt       DateTime         @onCreate(now()) @onUpdate(now())
+
+    product         Product          @relation(name: "inventory_ledger", fields: [productId], references: [id], onDelete: Restrict, map: "inventory_transaction_productId_fkey")
+    variant         ProductVariant?  @relation(name: "variant_inventory_tx", fields: [variantId], references: [id], onDelete: Restrict, map: "inventory_transaction_variantId_fkey")
+    performedByUser User?            @relation(name: "inventory_tx_user", fields: [performedBy], references: [id], onDelete: SetNull, map: "inventory_transaction_performedBy_fkey")
+
+    @@index([productId, variantId, createdAt], name: "inventory_transaction_product_variant_createdAt_idx")
+    @@rls
+    @@map("inventory_transaction")
+  }
+
+  model InventorySnapshot {
+    id          Uuid            @id(map: "inventory_snapshot_pkey") @onCreate(uuid(7))
+    productId   String
+    variantId   String?
+    available   Int             @default(0)
+    reserved    Int             @default(0)
+    warehouseId String?
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @onCreate(now()) @onUpdate(now())
+
+    product Product         @relation(name: "inventory_snapshots", fields: [productId], references: [id], onDelete: Cascade, map: "inventory_snapshot_productId_fkey")
+    variant ProductVariant? @relation(name: "variant_inventory_snapshots", fields: [variantId], references: [id], map: "inventory_snapshot_variantId_fkey")
+
+    @@unique([productId, variantId], map: "inventory_snapshot_productId_variantId_key")
+    @@index([productId], name: "inventory_snapshot_productId_idx")
+    @@index([createdAt], name: "inventory_snapshot_createdAt_idx")
+    @@rls
+    @@map("inventory_snapshot")
+  }
+
+  model Warehouse {
+    id             String          @id(map: "warehouse_pkey") @onCreate(uuid(7))
+    name           String
+    location       String
+    createdAt      DateTime        @default(now())
+    updatedAt      DateTime        @onCreate(now()) @onUpdate(now())
+
+    purchaseOrders PurchaseOrder[] @relation(name: "warehouse_purchase_orders")
+    variantStocks  VariantStock[]  @relation(name: "warehouse_variant_stocks")
+
+    @@rls
+    @@map("warehouse")
+  }
+
+  model Supplier {
+    id             String               @id(map: "supplier_pkey") @onCreate(uuid(7))
+    name           String
+    contact        String?
+    type           pg.enum(SupplierType) @default("LOCAL")
+    createdAt      DateTime             @default(now())
+    updatedAt      DateTime             @onCreate(now()) @onUpdate(now())
+
+    purchaseOrders PurchaseOrder[] @relation(name: "supplier_purchase_orders")
+
+    @@rls
+    @@map("supplier")
+  }
+
+  model PurchaseOrder {
+    id          Uuid      @id(map: "purchase_order_pkey") @onCreate(uuid(7))
+    supplierId  String
+    warehouseId String
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @onCreate(now()) @onUpdate(now())
+
+    supplier  Supplier  @relation(name: "supplier_purchase_orders", fields: [supplierId], references: [id], onDelete: Cascade, map: "purchase_order_supplierId_fkey")
+    warehouse Warehouse @relation(name: "warehouse_purchase_orders", fields: [warehouseId], references: [id], onDelete: Cascade, map: "purchase_order_warehouseId_fkey")
+
+    @@index([supplierId, warehouseId], name: "purchase_order_supplierId_warehouseId_idx")
+    @@rls
+    @@map("purchase_order")
+  }
+
+  // ==========================================
+  // COMMERCE (PANIER, COMMANDE, PAIEMENT)
+  // ==========================================
+  model Cart {
+    id           Uuid      @id(map: "cart_pkey") @onCreate(uuid(7))
+    userId       Uuid?     @unique(map: "cart_userId_key")
+    sessionToken String?   @unique(map: "cart_sessionToken_key")
+    expiresAt    DateTime
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @onCreate(now()) @onUpdate(now())
+
+    user           User?           @relation(fields: [userId], references: [id], onDelete: Cascade, map: "cart_userId_fkey")
+    items          CartItem[]      @relation(name: "cart_items")
+    abandonedCarts AbandonedCart[] @relation(name: "cart_abandoned")
+
+    @@index([expiresAt], name: "cart_expiresAt_idx")
+    @@rls
+    @@map("cart")
+  }
+
+  model CartItem {
+    id                 Uuid                     @id(map: "cart_item_pkey") @onCreate(uuid(7))
+    cartId             Uuid
+    variantId          String
+    quantity           Int                      @default(1)
+    snapshotPriceAtAdd Json?
+    createdAt          DateTime                 @default(now())
+    updatedAt          DateTime                 @onCreate(now()) @onUpdate(now())
+
+    cart    Cart           @relation(name: "cart_items", fields: [cartId], references: [id], onDelete: Cascade, map: "cart_item_cartId_fkey")
+    variant ProductVariant @relation(name: "cart_items", fields: [variantId], references: [id], onDelete: Cascade, map: "cart_item_variantId_fkey")
+
+    @@unique([cartId, variantId], map: "cart_item_cartId_variantId_key")
+    @@index([cartId], name: "cart_item_cartId_idx")
+    @@rls
+    @@map("cart_item")
+  }
+
+  model AbandonedCart {
+    id        Uuid     @id(map: "abandoned_cart_pkey") @onCreate(uuid(7))
+    cartId    Uuid     @unique(map: "abandoned_cart_cartId_key")
+    userId    Uuid?
+    expiresAt DateTime
+    createdAt DateTime @default(now())
+    updatedAt DateTime @onCreate(now()) @onUpdate(now())
+
+    cart Cart @relation(name: "cart_abandoned", fields: [cartId], references: [id], onDelete: Cascade, map: "abandoned_cart_cartId_fkey")
+    user User? @relation(fields: [userId], references: [id], onDelete: SetNull, map: "abandoned_cart_userId_fkey")
+
+    @@rls
+    @@map("abandoned_cart")
+  }
+
+  model Order {
+    id               Uuid                     @id(map: "order_pkey") @onCreate(uuid(7))
+    orderNumber      String                   @unique(map: "order_orderNumber_key")
+    userId           Uuid?
+    status           pg.enum(OrderStatusEnum) @default("PENDING")
+    subtotalAmount   Int
+    taxAmount        Int
+    discountAmount   Int
+    grandTotal       Int
+    shippingCost     Int                      @default(0)
+    totalAmount      Int
+    currency         pg.enum(Currency)        @default("USD")
+    billingMethodId  String?
+    shippingMethodId String?
+    trackingNumber   String?
+    cinetpayTransId  String?                  @unique(map: "order_cinetpayTransId_key")
+    createdAt        DateTime                 @default(now())
+    updatedAt        DateTime                 @onCreate(now()) @onUpdate(now())
+    paidAt           DateTime?
+    couponId         String?
+
+    user                 User?                @relation(fields: [userId], references: [id], onDelete: SetNull, map: "order_userId_fkey")
+    billingMethod        BillingMethod?       @relation(name: "order_billing_methods", fields: [billingMethodId], references: [id], map: "order_billingMethodId_fkey")
+    shippingMethod       ShippingMethod?      @relation(name: "order_shipping_methods", fields: [shippingMethodId], references: [id], map: "order_shippingMethodId_fkey")
+    items                OrderItem[]          @relation(name: "order_items")
+    payment              Payment?             @relation(name: "order_payment")
+    shipment             Shipment?            @relation(name: "order_shipment")
+    statusHistories      OrderStatusHistory[] @relation(name: "order_status_histories")
+    couponUsage          CouponUsage?         @relation(name: "order_coupon_usage")
+    giftCardRedemptions  GiftCardRedemption[] @relation(name: "order_gift_card_redemptions")
+    returns              Return[]             @relation(name: "order_returns")
+    refundItems          RefundItem[]         @relation(name: "order_refund_items")
+    orderAddresses       OrderAddress[]       @relation(name: "order_addresses")
+    stockReservations    StockReservation[]   @relation(name: "order_stock_reservations")
+    stockMovements       StockMovement[]      @relation(name: "order_stock_movements")
+    invoice              Invoice?             @relation(name: "order_invoice")
+    coupon               Coupon?              @relation(name: "coupon_orders", fields: [couponId], references: [id], map: "order_couponId_fkey")
+
+    @@index([userId, createdAt], name: "order_userId_createdAt_idx")
+    @@index([status, createdAt], name: "order_status_createdAt_idx")
+    @@rls
+    @@map("order")
+  }
+
+  model OrderItem {
+    id             Uuid                @id(map: "order_item_pkey") @onCreate(uuid(7))
+    orderId        String
+    productId      String
+    variantId      String
+    productName    String
+    variantSku     String
+    productImage   String?
+    attributes     Json?
+    quantity       Int
+    unitPrice      Int
+    subtotal       Int
+    taxAmount      Int?
+    discountAmount Int?
+    currency       pg.enum(Currency)?
+    exchangeRate   Decimal(precision: 10, scale: 4)?
+
+    order   Order          @relation(name: "order_items", fields: [orderId], references: [id], onDelete: Cascade, map: "order_item_orderId_fkey")
+    product Product        @relation(name: "order_items", fields: [productId], references: [id], onDelete: Restrict, map: "order_item_productId_fkey")
+    variant ProductVariant @relation(name: "order_item_variants", fields: [variantId], references: [id], onDelete: Restrict, map: "order_item_variantId_fkey")
+    returnItems ReturnItem[] @relation(name: "order_item_returns")
+
+    @@index([orderId], name: "order_item_orderId_idx")
+    @@rls
+    @@map("order_item")
+  }
+
+  model OrderStatusHistory {
+    id            Uuid           @id(map: "order_status_history_pkey") @onCreate(uuid(7))
+    orderId       String
+    orderStatusId String
+    note          Text?
+    createdAt     DateTime       @default(now())
+
+    order       Order       @relation(name: "order_status_histories", fields: [orderId], references: [id], onDelete: Cascade, map: "order_status_history_orderId_fkey")
+    orderStatus OrderStatus @relation(name: "order_status_histories_ref", fields: [orderStatusId], references: [id], map: "order_status_history_orderStatusId_fkey")
+
+    @@index([orderId, createdAt], name: "order_status_history_orderId_createdAt_idx")
+    @@rls
+    @@map("order_status_history")
+  }
+
+  model OrderAddress {
+    id        Uuid     @id(map: "order_address_pkey") @onCreate(uuid(7))
+    orderId   String
+    street    String
+    commune   String
+    city      String   @default("Kinshasa")
+    country   String   @default("RDC")
+    phone     String
+    createdAt DateTime @default(now())
+
+    order Order @relation(name: "order_addresses", fields: [orderId], references: [id], onDelete: Cascade, map: "order_address_orderId_fkey")
+
+    @@index([orderId], name: "order_address_orderId_idx")
+    @@rls
+    @@map("order_address")
+  }
+
+  model OrderStatus {
+    id                   String               @id(map: "order_status_pkey") @onCreate(uuid(7))
+    status               String               @unique(map: "order_status_status_key")
+    label                String
+    description          String?
+    color                String
+    whoCanSet            String[]
+    requiredPermission   String
+    minRoleLevel         Int
+    isTerminal           Boolean              @default(false)
+    triggersNotification Boolean              @default(true)
+    createdAt            DateTime             @default(now())
+    updatedAt            DateTime             @onCreate(now()) @onUpdate(now())
+
+    histories OrderStatusHistory[] @relation(name: "order_status_histories_ref")
+
+    @@rls
+    @@map("order_status")
+  }
+
+  model StockReservation {
+    id        Uuid           @id(map: "stock_reservation_pkey") @onCreate(uuid(7))
+    orderId   String
+    variantId String
+    quantity  Int
+    expiresAt DateTime
+    createdAt DateTime       @default(now())
+
+    order   Order          @relation(name: "order_stock_reservations", fields: [orderId], references: [id], onDelete: Cascade, map: "stock_reservation_orderId_fkey")
+    variant ProductVariant @relation(name: "variant_stock_reservations", fields: [variantId], references: [id], onDelete: Cascade, map: "stock_reservation_variantId_fkey")
+
+    @@index([expiresAt], name: "stock_reservation_expiresAt_idx")
+    @@rls
+    @@map("stock_reservation")
+  }
+
+  model CheckoutStep {
+    id                 String   @id(map: "checkout_step_pkey") @onCreate(uuid(7))
+    step               String   @unique(map: "checkout_step_step_key")
+    label              String
+    description        String?
+    requiredPermission String
+    minRoleLevel       Int
+    isGuestAllowed     Boolean  @default(false)
+    requiresAuth       Boolean  @default(true)
+    displayOrder       Int      @default(0)
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @onCreate(now()) @onUpdate(now())
+
+    @@index([displayOrder], name: "checkout_step_displayOrder_idx")
+    @@rls
+    @@map("checkout_step")
+  }
+
+  model ShippingMethod {
+    id            String     @id(map: "shipping_method_pkey") @onCreate(uuid(7))
+    name          String
+    description   String?
+    price         Int
+    freeShipping  Boolean    @default(false)
+    metadata      Json       @default(json`{}`)
+    minAmount     Int?
+    carrier       String?
+    estimatedDays String?
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @onCreate(now()) @onUpdate(now())
+    isActive      Boolean    @default(true)
+
+    orders    Order[]    @relation(name: "order_shipping_methods")
+    shipments Shipment[] @relation(name: "shipping_method_shipments")
+
+    @@rls
+    @@map("shipping_method")
+  }
+
+  model Carrier {
+    id        String     @id(map: "carrier_pkey") @onCreate(uuid(7))
+    name      String     @unique(map: "carrier_name_key")
+    code      String     @unique(map: "carrier_code_key")
+    contact   String?
+    isActive  Boolean    @default(true)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @onCreate(now()) @onUpdate(now())
+
+    shipments Shipment[] @relation(name: "carrier_shipments")
+
+    @@rls
+    @@map("carrier")
+  }
+
+  model Shipment {
+    id               String                 @id(map: "shipment_pkey") @onCreate(uuid(7))
+    orderId          String                 @unique(map: "shipment_orderId_key")
+    carrierId        String?
+    shippingMethodId String?
+    trackingNumber   String?                @unique(map: "shipment_trackingNumber_key")
+    status           pg.enum(ShipmentStatus) @default("PENDING")
+    shippedAt        DateTime?
+    deliveredAt      DateTime?
+    createdAt        DateTime               @default(now())
+    updatedAt        DateTime               @onCreate(now()) @onUpdate(now())
+
+    order          Order           @relation(name: "order_shipment", fields: [orderId], references: [id], onDelete: Cascade, map: "shipment_orderId_fkey")
+    carrier        Carrier?        @relation(name: "carrier_shipments", fields: [carrierId], references: [id], map: "shipment_carrierId_fkey")
+    shippingMethod ShippingMethod? @relation(name: "shipping_method_shipments", fields: [shippingMethodId], references: [id], map: "shipment_shippingMethodId_fkey")
+
+    @@rls
+    @@map("shipment")
+  }
+
+  model Payment {
+    id            Uuid                     @id(map: "payment_pkey") @onCreate(uuid(7))
+    orderId       String                   @unique(map: "payment_orderId_key")
+    amount        Int
+    currency      pg.enum(Currency)        @default("USD")
+    status        pg.enum(PaymentStatus)   @default("PENDING")
+    method        pg.enum(PaymentMethodType) @default("CINETPAY")
+    transactionId String?                  @unique(map: "payment_transactionId_key")
+    paidAt        DateTime?
+    createdAt     DateTime                 @default(now())
+    updatedAt     DateTime                 @onCreate(now()) @onUpdate(now())
+
+    order    Order            @relation(name: "order_payment", fields: [orderId], references: [id], onDelete: Cascade, map: "payment_orderId_fkey")
+    attempts PaymentAttempt[] @relation(name: "payment_attempts")
+    refund   Refund?          @relation(name: "payment_refund")
+
+    @@rls
+    @@map("payment")
+  }
+
+  model PaymentAttempt {
+    id        Uuid                     @id(map: "payment_attempt_pkey") @onCreate(uuid(7))
+    paymentId String
+    amount    Int
+    status    pg.enum(PaymentStatus)   @default("PENDING")
+    method    pg.enum(PaymentMethodType)?
+    createdAt DateTime                 @default(now())
+
+    payment Payment @relation(name: "payment_attempts", fields: [paymentId], references: [id], onDelete: Cascade, map: "payment_attempt_paymentId_fkey")
+
+    @@index([paymentId, createdAt], name: "payment_attempt_paymentId_createdAt_idx")
+    @@rls
+    @@map("payment_attempt")
+  }
+
+  model PaymentMethodConfig {
+    id                          String            @id(map: "payment_method_config_pkey") @onCreate(uuid(7))
+    method                      String            @unique(map: "payment_method_config_method_key")
+    label                       String
+    description                 String?
+    provider                    String
+    isActive                    Boolean           @default(true)
+    whoCanConfigure             String[]
+    whoCanViewTransactions      String[]
+    requiredPermissionConfigure String
+    requiredPermissionView      String
+    minRoleLevelConfigure       Int
+    minRoleLevelView            Int
+    requiresApproval            Boolean           @default(false)
+    maxTransactionAmount        Int
+    currency                    pg.enum(Currency) @default("USD")
+    createdAt                   DateTime          @default(now())
+    updatedAt                   DateTime          @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("payment_method_config")
+  }
+
+  model PaymentWebhookEvent {
+    id          String   @id(map: "payment_webhook_event_pkey") @onCreate(uuid(7))
+    provider    String
+    eventType   String
+    payload     Json
+    processed   Boolean  @default(false)
+    processedAt DateTime?
+    signature   String?
+    verified    Boolean  @default(false)
+    error       Text?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @onCreate(now()) @onUpdate(now())
+
+    @@index([provider, eventType], name: "payment_webhook_event_provider_eventType_idx")
+    @@rls
+    @@map("payment_webhook_event")
+  }
+
+  model PaymentAuditLog {
+    id            Uuid                   @id(map: "payment_audit_log_pkey") @onCreate(uuid(7))
+    transactionId String                 @unique(map: "payment_audit_log_transactionId_key")
+    orderId       String
+    amount        Decimal(precision: 12, scale: 2)
+    currency      Varchar(3)
+    status        pg.enum(PaymentAuditStatus)
+    cinetpayCode  String?
+    ipAddress     String?
+    rawPayload    Json
+    failureReason Text?
+    processedAt   DateTime?
+    createdAt     DateTime               @default(now())
+
+    @@index([orderId], name: "payment_audit_log_orderId_idx")
+    @@index([status], name: "payment_audit_log_status_idx")
+    @@rls
+    @@map("payment_audit_log")
+  }
+
+  model IdempotencyKey {
+    id           Uuid                    @id(map: "idempotency_key_pkey") @onCreate(uuid(7))
+    key          String                  @unique(map: "idempotency_key_key_key")
+    scope        String
+    status       pg.enum(IdempotencyStatus) @default("PENDING")
+    userId       String?
+    method       String?
+    route        String?
+    requestHash  String
+    responseBody Json?
+    errorBody    Json?
+    metadata     Json?
+    retryCount   Int                     @default(0)
+    createdAt    DateTime                @default(now())
+    updatedAt    DateTime                @onCreate(now()) @onUpdate(now())
+    lockedAt     DateTime                @default(now())
+    completedAt  DateTime?
+    expiresAt    DateTime?
+
+    user User? @relation(name: "idempotency_user", fields: [userId], references: [id], onDelete: SetNull, map: "idempotency_key_userId_fkey")
+
+    @@index([scope], name: "idempotency_key_scope_idx")
+    @@index([status], name: "idempotency_key_status_idx")
+    @@index([expiresAt], name: "idempotency_key_expiresAt_idx")
+    @@index([userId], name: "idempotency_key_userId_idx")
+    @@rls
+    @@map("idempotency_key")
+  }
+
+  model ReturnReason {
+    id          String   @id(map: "return_reason_pkey") @onCreate(uuid(7))
+    reason      String   @unique(map: "return_reason_reason_key")
+    description Text?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @onCreate(now()) @onUpdate(now())
+
+    returns     Return[]     @relation(name: "return_reason_returns")
+    returnItems ReturnItem[] @relation(name: "return_reason_return_items")
+    refunds     Refund[]     @relation(name: "return_reason_refunds")
+    refundItems RefundItem[] @relation(name: "return_reason_refund_items")
+
+    @@rls
+    @@map("return_reason")
+  }
+
+  model Return {
+    id             String                @id(map: "return_pkey") @onCreate(uuid(7))
+    orderId        String
+    reason         String
+    status         pg.enum(ReturnStatus) @default("REQUESTED")
+    returnReasonId String?
+    requestedAt    DateTime              @default(now())
+    resolvedAt     DateTime?
+
+    order        Order        @relation(name: "order_returns", fields: [orderId], references: [id], onDelete: Cascade, map: "return_orderId_fkey")
+    returnReason ReturnReason? @relation(name: "return_reason_returns", fields: [returnReasonId], references: [id], map: "return_returnReasonId_fkey")
+    returnItems  ReturnItem[]  @relation(name: "return_items")
+
+    @@rls
+    @@map("return")
+  }
+
+  model ReturnItem {
+    id             String                @id(map: "return_item_pkey") @onCreate(uuid(7))
+    returnId       String
+    orderItemId    String
+    quantity       Int                   @default(1)
+    reason         String
+    status         pg.enum(ReturnStatus) @default("REQUESTED")
+    returnReasonId String?
+    createdAt      DateTime              @default(now())
+    updatedAt      DateTime              @onCreate(now()) @onUpdate(now())
+
+    return       Return       @relation(name: "return_items", fields: [returnId], references: [id], onDelete: Cascade, map: "return_item_returnId_fkey")
+    orderItem    OrderItem    @relation(name: "order_item_returns", fields: [orderItemId], references: [id], onDelete: Restrict, map: "return_item_orderItemId_fkey")
+    returnReason ReturnReason? @relation(name: "return_reason_return_items", fields: [returnReasonId], references: [id], map: "return_item_returnReasonId_fkey")
+
+    @@index([returnId], name: "return_item_returnId_idx")
+    @@index([orderItemId], name: "return_item_orderItemId_idx")
+    @@rls
+    @@map("return_item")
+  }
+
+  model Refund {
+    id             String                @id(map: "refund_pkey") @onCreate(uuid(7))
+    paymentId      String                @unique(map: "refund_paymentId_key")
+    amount         Int
+    reason         String?
+    returnReasonId String?
+    status         pg.enum(RefundStatus) @default("PENDING")
+    createdAt      DateTime              @default(now())
+    updatedAt      DateTime              @onCreate(now()) @onUpdate(now())
+
+    payment      Payment      @relation(name: "payment_refund", fields: [paymentId], references: [id], onDelete: Cascade, map: "refund_paymentId_fkey")
+    returnReason ReturnReason? @relation(name: "return_reason_refunds", fields: [returnReasonId], references: [id], map: "refund_returnReasonId_fkey")
+    refundItems  RefundItem[]  @relation(name: "refund_items")
+
+    @@rls
+    @@map("refund")
+  }
+
+  model RefundItem {
+    id             String                @id(map: "refund_item_pkey") @onCreate(uuid(7))
+    refundId       String
+    orderId        String
+    quantity       Int                   @default(1)
+    reason         String?
+    returnReasonId String?
+    status         pg.enum(RefundStatus) @default("PENDING")
+    createdAt      DateTime              @default(now())
+    updatedAt      DateTime              @onCreate(now()) @onUpdate(now())
+
+    refund       Refund       @relation(name: "refund_items", fields: [refundId], references: [id], onDelete: Cascade, map: "refund_item_refundId_fkey")
+    order        Order        @relation(name: "order_refund_items", fields: [orderId], references: [id], onDelete: Cascade, map: "refund_item_orderId_fkey")
+    returnReason ReturnReason? @relation(name: "return_reason_refund_items", fields: [returnReasonId], references: [id], map: "refund_item_returnReasonId_fkey")
+
+    @@index([refundId], name: "refund_item_refundId_idx")
+    @@rls
+    @@map("refund_item")
+  }
+
+  model Coupon {
+    id            String              @id(map: "coupon_pkey") @onCreate(uuid(7))
+    code          String              @unique(map: "coupon_code_key")
+    discountType  pg.enum(DiscountType)
+    discountValue Int
+    minOrderValue Int?
+    expiresAt     DateTime
+    isActive      Boolean             @default(true)
+    usageLimit    Int?
+    usageCount    Int                 @default(0)
+    createdAt     DateTime            @default(now())
+
+    orders       Order[]       @relation(name: "coupon_orders")
+    couponUsages CouponUsage[] @relation(name: "coupon_usages")
+    products     Product[]     @relation(name: "coupon_products")
+
+    @@rls
+    @@map("coupon")
+  }
+
+  model CouponUsage {
+    id       Uuid     @id(map: "coupon_usage_pkey") @onCreate(uuid(7))
+    couponId String
+    userId   String
+    orderId  String   @unique(map: "coupon_usage_orderId_key")
+    usedAt   DateTime @default(now())
+
+    coupon Coupon @relation(name: "coupon_usages", fields: [couponId], references: [id], onDelete: Cascade, map: "coupon_usage_couponId_fkey")
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "coupon_usage_userId_fkey")
+    order  Order  @relation(name: "order_coupon_usage", fields: [orderId], references: [id], onDelete: Cascade, map: "coupon_usage_orderId_fkey")
+
+    @@unique([couponId, userId, orderId], map: "coupon_usage_couponId_userId_orderId_key")
+    @@index([couponId], name: "coupon_usage_couponId_idx")
+    @@index([userId], name: "coupon_usage_userId_idx")
+    @@index([orderId], name: "coupon_usage_orderId_idx")
+    @@rls
+    @@map("coupon_usage")
+  }
+
+  model GiftCard {
+    id             String               @id(map: "gift_card_pkey") @onCreate(uuid(7))
+    code           String               @unique(map: "gift_card_code_key")
+    initialBalance Int
+    balance        Int
+    expiresAt      DateTime?
+    isActive       Boolean              @default(true)
+    createdAt      DateTime             @default(now())
+    updatedAt      DateTime             @onCreate(now()) @onUpdate(now())
+
+    redemptions GiftCardRedemption[] @relation(name: "gift_card_redemptions")
+
+    @@rls
+    @@map("gift_card")
+  }
+
+  model GiftCardRedemption {
+    id         Uuid     @id(map: "gift_card_redemption_pkey") @onCreate(uuid(7))
+    giftCardId String
+    orderId    String
+    amount     Int
+    createdAt  DateTime @default(now())
+
+    giftCard GiftCard @relation(name: "gift_card_redemptions", fields: [giftCardId], references: [id], onDelete: Cascade, map: "gift_card_redemption_giftCardId_fkey")
+    order    Order    @relation(name: "order_gift_card_redemptions", fields: [orderId], references: [id], onDelete: Cascade, map: "gift_card_redemption_orderId_fkey")
+
+    @@index([giftCardId], name: "gift_card_redemption_giftCardId_idx")
+    @@rls
+    @@map("gift_card_redemption")
+  }
+
+  model Wishlist {
+    id        Uuid           @id(map: "wishlist_pkey") @onCreate(uuid(7))
+    userId    Uuid           @unique(map: "wishlist_userId_key")
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @onCreate(now()) @onUpdate(now())
+
+    user  User           @relation(fields: [userId], references: [id], onDelete: Cascade, map: "wishlist_userId_fkey")
+    items WishlistItem[] @relation(name: "wishlist_items")
+
+    @@rls
+    @@map("wishlist")
+  }
+
+  model WishlistItem {
+    id         Uuid     @id(map: "wishlist_item_pkey") @onCreate(uuid(7))
+    wishlistId Uuid
+    productId  String
+    addedAt    DateTime @default(now())
+
+    wishlist Wishlist @relation(name: "wishlist_items", fields: [wishlistId], references: [id], onDelete: Cascade, map: "wishlist_item_wishlistId_fkey")
+    product  Product  @relation(name: "wishlist_items", fields: [productId], references: [id], onDelete: Restrict, map: "wishlist_item_productId_fkey")
+
+    @@unique([wishlistId, productId], map: "wishlist_item_wishlistId_productId_key")
+    @@rls
+    @@map("wishlist_item")
+  }
+
+  model WishlistConfig {
+    id                 String   @id(map: "wishlist_config_pkey") @onCreate(uuid(7))
+    feature            String   @unique(map: "wishlist_config_feature_key")
+    label              String
+    description        String?
+    requiredPermission String
+    minRoleLevel       Int
+    maxItems           Int
+    isSharedAllowed    Boolean  @default(false)
+    requiresAuth       Boolean  @default(true)
+    managedByRoles     String[]
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @onCreate(now()) @onUpdate(now())
+
+    @@index([feature], name: "wishlist_config_feature_idx")
+    @@index([requiredPermission, minRoleLevel], name: "wishlist_config_permission_idx")
+    @@index([isSharedAllowed], name: "wishlist_config_isSharedAllowed_idx")
+    @@index([requiresAuth], name: "wishlist_config_requiresAuth_idx")
+    @@index([maxItems], name: "wishlist_config_maxItems_idx")
+    @@rls
+    @@map("wishlist_config")
+  }
+
+  model BillingMethod {
+    id            String  @id(map: "billing_method_pkey") @onCreate(uuid(7))
+    name          String
+    paymentMethod String?
+
+    orders Order[] @relation(name: "order_billing_methods")
+
+    @@rls
+    @@map("billing_method")
+  }
+
+  model Invoice {
+    id            Uuid            @id(map: "invoice_pkey") @onCreate(uuid(7))
+    orderId       String          @unique(map: "invoice_orderId_key")
+    invoiceNumber String          @unique(map: "invoice_invoiceNumber_key")
+    issueDate     DateTime        @default(now())
+    dueDate       DateTime
+    amountDue     Int
+    currency      pg.enum(Currency) @default("USD")
+    status        String
+    pdfUrl        String?
+    createdAt     DateTime        @default(now())
+    updatedAt     DateTime        @onCreate(now()) @onUpdate(now())
+
+    order Order @relation(name: "order_invoice", fields: [orderId], references: [id], onDelete: Cascade, map: "invoice_orderId_fkey")
+
+    @@rls
+    @@map("invoice")
+  }
+
+  // ==========================================
+  // AUDIT & SÉCURITÉ
+  // ==========================================
+  model AuditLog {
+    id         String                   @onCreate(uuid(7))
+    userId     String?
+    roleLevel  Int                      @default(7)
+    action     String
+    targetId   String?
+    targetType String?
+    actorName  String?
+    actorEmail String?
+    severity   pg.enum(AuditSeverity)   @default("INFO")
+    entity     String?
+    entityType String?
+    entityId   String?
+    newValue   Json?
+    oldValue   Json?
+    metadata   Json?
+    ip         String?
+    details    Text?
+    ipAddress  String?
+    userAgent  String?
+    location   String?
+    browser    String?
+    os         String?
+    device     String?
+    referrer   String?
+    screenRes  String?
+    duration   Int?
+    status     String?                  @default("SUCCESS")
+    error      String?
+    errorCode  Varchar(128)?
+    reason     Text?
+    payload    Json?
+    response   Json?
+    context    Json?
+    sessionId  String?
+    traceId    Varchar(128)?
+    createdAt  TimestamptzJsDate(6)     @onCreate(now())
+    updatedAt  TimestamptzJsDate(6)     @onCreate(now()) @onUpdate(now())
+
+    @@id([id, createdAt], map: "audit_log_pkey")
+    @@index([userId], map: "audit_log_user_id_idx")
+    @@index([action], map: "audit_log_action_idx")
+    @@index([entity], map: "audit_log_entity_idx")
+    @@index([createdAt], map: "audit_log_created_at_idx")
+    @@index([targetId, targetType], map: "audit_log_target_idx")
+    @@index([severity], map: "audit_log_severity_idx")
+    @@index([action, createdAt], map: "audit_log_action_time_idx")
+    @@index([metadata], type: "gin", map: "audit_log_metadata_gin_idx")
+    @@rls
+    @@map("audit_log")
+  }
+
+  model AuditOutbox {
+    id            Uuid               @id(map: "audit_outbox_pkey") @onCreate(uuid(7))
+    payload       Jsonb
+    attempts      Int                @default(0)
+    lockedAt      TimestamptzJsDate(6)?
+    processedAt   TimestamptzJsDate(6)?
+    failedAt      TimestamptzJsDate(6)?
+    nextAttemptAt TimestamptzJsDate(6) @onCreate(now())
+    lastError     Text?
+    createdAt     TimestamptzJsDate(6) @onCreate(now())
+
+    @@index([processedAt, nextAttemptAt, createdAt], name: "audit_outbox_processed_next_created_idx")
+    @@rls
+    @@map("audit_outbox")
+  }
+
+  model AuditApprovalRequest {
+    id                     Uuid      @id(map: "audit_approval_request_pkey") @onCreate(uuid(7))
+    requesterId            String
+    requesterRole          String
+    requesterLevel         Int
+    targetRole             String
+    targetLevel            Int
+    reason                 String
+    status                 String
+    approvedById           String?
+    approvedByRole         String?
+    approvalToken          String?   @unique(map: "audit_approval_request_approvalToken_key")
+    approvalTokenExpiresAt DateTime?
+    expiresAt              DateTime
+    createdAt              DateTime  @default(now())
+    updatedAt              DateTime  @onCreate(now()) @onUpdate(now())
+
+    @@index([requesterId, status], name: "audit_approval_request_requesterId_status_idx")
+    @@index([status, expiresAt], name: "audit_approval_request_status_expiresAt_idx")
+    @@index([approvalToken], name: "audit_approval_request_approvalToken_idx")
+    @@rls
+    @@map("audit_approval_request")
+  }
+
+  model AuditApprovalPolicy {
+    id                        String   @id(map: "audit_approval_policy_pkey") @onCreate(uuid())
+    policyName                String   @unique(map: "audit_approval_policy_policyName_key")
+    label                     String
+    description               String?
+    approvalTokenTtlMinutes   Int
+    requestTtlMinutes         Int
+    whoCanApprove             String[]
+    requiredPermissionApprove String
+    minRoleLevelApprove       Int
+    requiresDualApproval      Boolean  @default(false)
+    isActive                  Boolean  @default(true)
+    createdAt                 DateTime @default(now())
+    updatedAt                 DateTime @onCreate(now()) @onUpdate(now())
+
+    @@index([policyName, isActive, createdAt], name: "audit_approval_policy_name_active_created_idx")
+    @@index([isActive, createdAt], name: "audit_approval_policy_active_created_idx")
+    @@index([policyName], name: "audit_approval_policy_policyName_idx")
+    @@rls
+    @@map("audit_approval_policy")
+  }
+
+  model AuditEventType {
+    id                       String   @id(map: "audit_event_type_pkey") @onCreate(uuid(7))
+    event                    String   @unique(map: "audit_event_type_event_key")
+    label                    String
+    description              String?
+    severity                 String
+    whoCanView               String[]
+    whoCanDelete             String[]
+    requiredPermissionView   String
+    requiredPermissionDelete String
+    minRoleLevelView         Int
+    minRoleLevelDelete       Int
+    retentionDays            Int
+    isImmutable              Boolean  @default(true)
+    createdAt                DateTime @default(now())
+    updatedAt                DateTime @onCreate(now()) @onUpdate(now())
+
+    @@index([event, severity, createdAt], name: "audit_event_type_event_severity_created_idx")
+    @@rls
+    @@map("audit_event_type")
+  }
+
+  // ==========================================
+  // SYSTÈME & CONFIGURATION
+  // ==========================================
+  model Media {
+    id         Uuid      @id(map: "media_pkey") @onCreate(uuid(7))
+    name       String
+    url        String
+    mimeType   String
+    sizeBytes  Int       @default(0)
+    bucket     String
+    type       String?
+    metadata   Json?
+    uploadedBy String?
+    createdAt  DateTime  @default(now())
+    updatedAt  DateTime  @onCreate(now()) @onUpdate(now())
+
+    uploader User? @relation(name: "media_uploader", fields: [uploadedBy], references: [id], onDelete: SetNull, map: "media_uploadedBy_fkey")
+
+    @@index([bucket], name: "media_bucket_idx")
+    @@index([mimeType], name: "media_mimeType_idx")
+    @@index([createdAt], name: "media_createdAt_idx")
+    @@rls
+    @@map("media")
+  }
+
+  model MediaTypeConfig {
+    id                       String   @id(map: "media_type_config_pkey") @onCreate(uuid(7))
+    mediaType                String   @unique(map: "media_type_config_mediaType_key")
+    label                    String
+    description              String?
+    allowedExtensions        String[]
+    maxFileSize              Int
+    maxDimensions            Json?
+    whoCanUpload             String[]
+    whoCanDelete             String[]
+    requiredPermissionUpload String
+    requiredPermissionDelete String
+    minRoleLevelUpload       Int
+    minRoleLevelDelete       Int
+    storageBucket            String
+    isPublic                 Boolean  @default(true)
+    requiresCompression      Boolean  @default(true)
+    createdAt                DateTime @default(now())
+    updatedAt                DateTime @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("media_type_config")
+  }
+
+  model VideoTypeConfig {
+    id                         String   @id(map: "video_type_config_pkey") @onCreate(uuid(7))
+    videoType                  String   @unique(map: "video_type_config_videoType_key")
+    label                      String
+    description                String?
+    allowedFormats             String[]
+    maxDuration                Int
+    maxFileSize                Int
+    maxResolution              String
+    whoCanUpload               String[]
+    whoCanModerate             String[]
+    whoCanDelete               String[]
+    requiredPermissionUpload   String
+    requiredPermissionModerate String
+    requiredPermissionDelete   String
+    minRoleLevelUpload         Int
+    minRoleLevelModerate       Int
+    minRoleLevelDelete         Int
+    autoTranscode              Boolean  @default(true)
+    generateThumbnails         Boolean  @default(true)
+    isPublicByDefault          Boolean  @default(true)
+    requiresApproval           Boolean  @default(true)
+    createdAt                  DateTime @default(now())
+    updatedAt                  DateTime @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("video_type_config")
+  }
+
+  model StreamingConfig {
+    id                 String   @id(map: "streaming_config_pkey") @onCreate(uuid(7))
+    configName         String   @unique(map: "streaming_config_configName_key")
+    label              String
+    description        String?
+    provider           String
+    whoCanConfigure    String[]
+    requiredPermission String
+    minRoleLevel       Int
+    isActive           Boolean  @default(false)
+    settings           Json     @default(json`{}`)
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("streaming_config")
+  }
+
+  model StorageQuota {
+    id                    String   @id(map: "storage_quota_pkey") @onCreate(uuid(7))
+    quotaName             String   @unique(map: "storage_quota_quotaName_key")
+    label                 String
+    description           String?
+    maxStorageMB          Int
+    maxFiles              Int
+    whoCanConfigure       String[]
+    minRoleLevelConfigure Int
+    appliesToRoles        String[]
+    createdAt             DateTime @default(now())
+    updatedAt             DateTime @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("storage_quota")
+  }
+
+  model RetentionPolicy {
+    id              String   @id(map: "retention_policy_pkey") @onCreate(uuid(7))
+    policyName      String   @unique(map: "retention_policy_policyName_key")
+    label           String
+    description     String?
+    retentionDays   Int
+    whoCanConfigure String[]
+    minRoleLevel    Int
+    autoArchive     Boolean  @default(true)
+    autoDelete      Boolean  @default(false)
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("retention_policy")
+  }
+
+  model FinancialThreshold {
+    id                         String            @id(map: "financial_threshold_pkey") @onCreate(uuid(7))
+    thresholdName              String            @unique(map: "financial_threshold_thresholdName_key")
+    label                      String
+    description                Text?
+    amount                     Int
+    currency                   pg.enum(Currency) @default("USD")
+    whoCanOverride             String[]
+    requiredPermissionOverride String
+    minRoleLevelOverride       Int
+    triggersAlert              Boolean           @default(true)
+    alertRecipients            String[]
+    createdAt                  DateTime          @default(now())
+    updatedAt                  DateTime          @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("financial_threshold")
+  }
+
+  model TaxClass {
+    id          String    @id(map: "tax_classes_pkey") @onCreate(uuid(7))
+    name        String    @unique(map: "tax_classes_name_key")
+    description Text?
+
+    products Product[]  @relation(name: "product_tax_classes")
+    taxRates TaxRate[]  @relation(name: "tax_class_rates")
+
+    @@rls
+    @@map("tax_classes")
+  }
+
+  model TaxRate {
+    id         Uuid                   @id(map: "tax_rate_pkey") @onCreate(uuid(7))
+    taxClassId String
+    country    String                 @default("RDC")
+    region     String?
+    rate       Decimal(precision: 5, scale: 4)
+
+    taxClass TaxClass @relation(name: "tax_class_rates", fields: [taxClassId], references: [id], onDelete: Cascade, map: "tax_rate_taxClassId_fkey")
+
+    @@unique([taxClassId, country, region], map: "tax_rate_taxClassId_country_region_key")
+    @@index([taxClassId], name: "tax_rate_taxClassId_idx")
+    @@index([country, region], name: "tax_rate_country_region_idx")
+    @@index([country, region, taxClassId], name: "tax_rate_country_region_taxClassId_idx")
+    @@rls
+    @@map("tax_rate")
+  }
+
+  model SeoRedirect {
+    id         String   @id(map: "seo_redirects_pkey") @onCreate(uuid(7))
+    fromPath   String   @unique(map: "seo_redirects_fromPath_key")
+    toPath     String
+    statusCode Int      @default(301)
+    createdAt  DateTime @default(now())
+
+    @@rls
+    @@map("seo_redirects")
+  }
+
+  model AppConfig {
+    id                    String             @id(map: "app_config_pkey") @onCreate(uuid(7))
+    usdToCdfRate          Decimal(precision: 12, scale: 4)
+    exchangeRateSource    String
+    exchangeRateUpdatedAt DateTime?
+    createdAt             DateTime           @default(now())
+    updatedAt             DateTime           @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("app_config")
+  }
+
+  model ExchangeRate {
+    id            String             @id(map: "exchange_rate_pkey") @onCreate(uuid(7))
+    baseCurrency  pg.enum(Currency)
+    quoteCurrency pg.enum(Currency)
+    rate          Decimal(precision: 18, scale: 6)
+    source        String
+    effectiveAt   DateTime
+    createdAt     DateTime           @default(now())
+
+    @@unique([baseCurrency, quoteCurrency, effectiveAt], map: "exchange_rate_base_quote_effective_key")
+    @@index([baseCurrency, quoteCurrency], name: "exchange_rate_base_quote_idx")
+    @@index([effectiveAt], name: "exchange_rate_effectiveAt_idx")
+    @@rls
+    @@map("exchange_rate")
+  }
+
+  model NewsletterSubscriber {
+    id        String            @id(map: "newsletter_subscriber_pkey") @onCreate(uuid(7))
+    email     String            @unique(map: "newsletter_subscriber_email_key")
+    createdAt TimestamptzJsDate(6) @onCreate(now())
+    updatedAt TimestamptzJsDate(6) @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("newsletter_subscriber")
+  }
+
+  model SystemConfiguration {
+    id        String   @id(map: "system_configuration_pkey") @onCreate(uuid(7))
+    key       String   @unique(map: "system_configuration_key_key")
+    value     String
+    updatedAt DateTime @onCreate(now()) @onUpdate(now())
+
+    @@rls
+    @@map("system_configuration")
+  }
+
+  model DeletedAccountRegistry {
+    id            String   @id(map: "deleted_account_registry_pkey") @onCreate(uuid(7))
+    version       Int      @default(1)
+    userId        String
+    userEmail     String
+    userName      String?
+    deletedBy     String?
+    deletedByRole String
+    userSnapshot  Jsonb
+    reason        String
+    metadata      Json?
+    createdAt     DateTime @default(now())
+    restoredAt    DateTime?
+    restoredBy    String?
+    restoreNote   Text?
+
+    deletedByUser User? @relation(name: "deleted_account_by", fields: [deletedBy], references: [id], onDelete: SetNull, map: "deleted_account_registry_deletedBy_fkey")
+    restoredByUser User? @relation(name: "deleted_account_restored_by", fields: [restoredBy], references: [id], onDelete: SetNull, map: "deleted_account_registry_restoredBy_fkey")
+
+    @@index([userId], name: "deleted_account_registry_userId_idx")
+    @@index([deletedBy], name: "deleted_account_registry_deletedBy_idx")
+    @@index([createdAt], name: "deleted_account_registry_createdAt_idx")
+    @@index([userEmail], name: "deleted_account_registry_userEmail_idx")
+    @@rls
+    @@map("deleted_account_registry")
+  }
+
+  model Notification {
+    id        Uuid     @id(map: "notification_pkey") @onCreate(uuid(7))
+    userId    Uuid
+    type      String
+    title     String
+    message   Text
+    isRead    Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "notification_userId_fkey")
+
+    @@index([userId, createdAt], name: "notification_userId_createdAt_idx")
+    @@rls
+    @@map("notification")
+  }
+
+  model SearchAnalytics {
+    id        Uuid     @id(map: "search_analytics_pkey") @onCreate(uuid(7))
+    userId    Uuid?    @unique(map: "search_analytics_userId_key")
+    searches  Json?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @onCreate(now()) @onUpdate(now())
+
+    user User? @relation(fields: [userId], references: [id], onDelete: Cascade, map: "search_analytics_userId_fkey")
+
+    @@rls
+    @@map("search_analytics")
+  }
+
+  model Dashboard {
+    id        Uuid     @id(map: "dashboard_pkey") @onCreate(uuid(7))
+    name      String
+    userId    Uuid
+    createdAt DateTime @default(now())
+    updatedAt DateTime @onCreate(now()) @onUpdate(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "dashboard_userId_fkey")
+
+    @@rls
+    @@map("dashboard")
+  }
+
+  model Post {
+    id        Uuid     @id(map: "post_pkey") @onCreate(uuid(7))
+    title     String
+    userId    Uuid
+    content   Text?
+    published Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @onCreate(now()) @onUpdate(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_userId_fkey")
+
+    @@rls
+    @@map("post")
+  }
+
+  // ==========================================
+  // ÉNUMÉRATIONS NATIVES (PostgreSQL)
+  // ==========================================
+  native_enum UserStatus {
+    ACTIVE = "ACTIVE"
+    SUSPENDED = "SUSPENDED"
+    ARCHIVED = "ARCHIVED"
+  }
+
+  native_enum Role {
+    SUPER_ADMIN = "SUPER_ADMIN"
+    ADMIN = "ADMIN"
+    MANAGER = "MANAGER"
+    EDITOR = "EDITOR"
+    SUPERVISOR = "SUPERVISOR"
+    USER = "USER"
+    GUEST = "GUEST"
+  }
+
+  native_enum VerificationType {
+    EMAIL_VERIFICATION = "EMAIL_VERIFICATION"
+    PASSWORD_RESET = "PASSWORD_RESET"
+    MAGIC_LINK = "MAGIC_LINK"
+    EMAIL_CHANGE = "EMAIL_CHANGE"
+    PHONE_VERIFICATION = "PHONE_VERIFICATION"
+    TWO_FACTOR = "TWO_FACTOR"
+  }
+
+  native_enum AuditSeverity {
+    INFO = "INFO"
+    WARNING = "WARNING"
+    CRITICAL = "CRITICAL"
+  }
+
+  native_enum ProductStatus {
+    DRAFT = "DRAFT"
+    PENDING = "PENDING"
+    SCHEDULED = "SCHEDULED"
+    PUBLISHED = "PUBLISHED"
+    ARCHIVED = "ARCHIVED"
+    DISCONTINUED = "DISCONTINUED"
+  }
+
+  native_enum Currency {
+    USD = "USD"
+    CDF = "CDF"
+  }
+
+  native_enum StockMovementType {
+    IN = "IN"
+    OUT = "OUT"
+    ADJUSTMENT = "ADJUSTMENT"
+    RESERVATION = "RESERVATION"
+    RELEASE = "RELEASE"
+    RETURN = "RETURN"
+  }
+
+  native_enum TransactionType {
+    RESTOCK = "RESTOCK"
+    SALE = "SALE"
+    RETURN = "RETURN"
+    SHRINKAGE = "SHRINKAGE"
+  }
+
+  native_enum OrderStatusEnum {
+    PENDING = "PENDING"
+    CONFIRMED = "CONFIRMED"
+    PROCESSING = "PROCESSING"
+    SHIPPED = "SHIPPED"
+    DELIVERED = "DELIVERED"
+    CANCELLED = "CANCELLED"
+    REFUNDED = "REFUNDED"
+  }
+
+  native_enum ShipmentStatus {
+    PENDING = "PENDING"
+    SHIPPED = "SHIPPED"
+    IN_TRANSIT = "IN_TRANSIT"
+    DELIVERED = "DELIVERED"
+    EXCEPTION = "EXCEPTION"
+  }
+
+  native_enum PaymentStatus {
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    REFUNDED = "REFUNDED"
+  }
+
+  native_enum PaymentMethodType {
+    CINETPAY = "CINETPAY"
+    MPESA = "MPESA"
+    ORANGE_MONEY = "ORANGE_MONEY"
+    AIRTEL_MONEY = "AIRTEL_MONEY"
+    CASH_ON_DELIVERY = "CASH_ON_DELIVERY"
+  }
+
+  native_enum PaymentAuditStatus {
+    PENDING = "PENDING"
+    SUCCESS = "SUCCESS"
+    FAILED = "FAILED"
+    REPLAY_ATTEMPT_BLOCKED = "REPLAY_ATTEMPT_BLOCKED"
+    AMOUNT_MISMATCH = "AMOUNT_MISMATCH"
+  }
+
+  native_enum IdempotencyStatus {
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+  }
+
+  native_enum ReturnStatus {
+    REQUESTED = "REQUESTED"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    RECEIVED = "RECEIVED"
+    REFUNDED = "REFUNDED"
+  }
+
+  native_enum RefundStatus {
+    PENDING = "PENDING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+  }
+
+  native_enum DiscountType {
+    PERCENTAGE = "PERCENTAGE"
+    FIXED_AMOUNT = "FIXED_AMOUNT"
+  }
+
+  native_enum SupplierType {
+    LOCAL = "LOCAL"
+    INTERNATIONAL = "INTERNATIONAL"
+  }
+
+  policy_select posts_public_read {
+    target = Post
+    roles  = [anon, authenticated]
+    using  = sql`true`
+  }
+
 }
