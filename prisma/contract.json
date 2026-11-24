@@ -200,7 +200,7 @@
       "model": "PermissionOverride",
       "namespace": "public"
     },
-    "post": {
+    "posts": {
       "model": "Post",
       "namespace": "public"
     },
@@ -364,10 +364,6 @@
       "model": "TwoFactorBackupCode",
       "namespace": "public"
     },
-    "user": {
-      "model": "User",
-      "namespace": "public"
-    },
     "user_audit": {
       "model": "UserAudit",
       "namespace": "public"
@@ -382,6 +378,10 @@
     },
     "user_security": {
       "model": "UserSecurity",
+      "namespace": "public"
+    },
+    "users": {
+      "model": "User",
       "namespace": "public"
     },
     "variant_attribute_config": {
@@ -1631,9 +1631,9 @@
                 }
               },
               "metadata": {
-                "nullable": true,
+                "nullable": false,
                 "type": {
-                  "codecId": "pg/json@1",
+                  "codecId": "pg/jsonb@1",
                   "kind": "scalar"
                 }
               },
@@ -7688,7 +7688,7 @@
                 }
               },
               "namespaceId": "public",
-              "table": "post"
+              "table": "posts"
             }
           },
           "Product": {
@@ -13766,7 +13766,7 @@
                 }
               },
               "namespaceId": "public",
-              "table": "user"
+              "table": "users"
             }
           },
           "UserAudit": {
@@ -15328,6 +15328,27 @@
   },
   "storage": {
     "namespaces": {
+      "extensions": {
+        "entries": {
+          "extension": {
+            "pg_stat_statements": {
+              "kind": "extension",
+              "name": "pg_stat_statements"
+            },
+            "pgcrypto": {
+              "kind": "extension",
+              "name": "pgcrypto"
+            },
+            "uuid-ossp": {
+              "kind": "extension",
+              "name": "uuid-ossp"
+            }
+          },
+          "table": {}
+        },
+        "id": "extensions",
+        "kind": "postgres-schema"
+      },
       "public": {
         "entries": {
           "native_enum": {
@@ -15530,7 +15551,7 @@
                 "anon",
                 "authenticated"
               ],
-              "tableName": "post",
+              "tableName": "posts",
               "using": "true"
             }
           },
@@ -15780,10 +15801,10 @@
               "namespaceId": "public",
               "tableName": "permission_override"
             },
-            "post": {
+            "posts": {
               "kind": "rls",
               "namespaceId": "public",
-              "tableName": "post"
+              "tableName": "posts"
             },
             "product": {
               "kind": "rls",
@@ -15985,11 +16006,6 @@
               "namespaceId": "public",
               "tableName": "twofactor_backup_code"
             },
-            "user": {
-              "kind": "rls",
-              "namespaceId": "public",
-              "tableName": "user"
-            },
             "user_audit": {
               "kind": "rls",
               "namespaceId": "public",
@@ -16009,6 +16025,11 @@
               "kind": "rls",
               "namespaceId": "public",
               "tableName": "user_security"
+            },
+            "users": {
+              "kind": "rls",
+              "namespaceId": "public",
+              "tableName": "users"
             },
             "variant_attribute_config": {
               "kind": "rls",
@@ -16140,7 +16161,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -16308,7 +16329,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -16437,7 +16458,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -17035,9 +17056,9 @@
                   "nullable": true
                 },
                 "metadata": {
-                  "codecId": "pg/json@1",
-                  "dataType": "pg/json",
-                  "nullable": true
+                  "codecId": "pg/jsonb@1",
+                  "dataType": "pg/jsonb",
+                  "nullable": false
                 },
                 "newValue": {
                   "codecId": "pg/json@1",
@@ -17486,7 +17507,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -18390,7 +18411,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -18521,7 +18542,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -18649,7 +18670,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -18670,7 +18691,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -19290,7 +19311,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -19622,7 +19643,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -19967,7 +19988,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -20281,7 +20302,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -20472,7 +20493,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -22133,7 +22154,7 @@
                 }
               ]
             },
-            "post": {
+            "posts": {
               "columns": {
                 "content": {
                   "codecId": "pg/text@1",
@@ -22188,7 +22209,7 @@
               "foreignKeys": [
                 {
                   "index": {
-                    "name": "post_userId_idx_a489d58a"
+                    "name": "posts_userId_idx_a489d58a"
                   },
                   "name": "post_userId_fkey",
                   "onDelete": "cascade",
@@ -22197,14 +22218,14 @@
                       "userId"
                     ],
                     "namespaceId": "public",
-                    "tableName": "post"
+                    "tableName": "posts"
                   },
                   "target": {
                     "columns": [
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -22213,8 +22234,8 @@
                   "columns": [
                     "userId"
                   ],
-                  "name": "post_userId_idx_a489d58a",
-                  "prefix": "post_userId_idx",
+                  "name": "posts_userId_idx_a489d58a",
+                  "prefix": "posts_userId_idx",
                   "unique": false
                 }
               ],
@@ -22524,7 +22545,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -22544,7 +22565,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -22564,7 +22585,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -22584,7 +22605,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -23247,7 +23268,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -23722,7 +23743,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -24745,7 +24766,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -24890,7 +24911,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -25314,7 +25335,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -25473,7 +25494,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -25913,7 +25934,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -26227,7 +26248,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -26903,7 +26924,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -27045,119 +27066,6 @@
               },
               "uniques": []
             },
-            "user": {
-              "columns": {
-                "createdAt": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "default": {
-                    "expression": "now()",
-                    "kind": "function"
-                  },
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "email": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": false
-                },
-                "emailVerified": {
-                  "codecId": "pg/bool@1",
-                  "dataType": "pg/bool",
-                  "default": {
-                    "kind": "literal",
-                    "value": false
-                  },
-                  "nullable": false
-                },
-                "emailVerifiedAt": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "nullable": true,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                },
-                "id": {
-                  "codecId": "pg/uuid@1",
-                  "dataType": "pg/uuid",
-                  "nullable": false
-                },
-                "image": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": true
-                },
-                "name": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": true
-                },
-                "role": {
-                  "codecId": "pg/enum@1",
-                  "dataType": "pg/enum",
-                  "default": {
-                    "kind": "literal",
-                    "value": "USER"
-                  },
-                  "nullable": false,
-                  "typeParams": {
-                    "typeName": "Role"
-                  },
-                  "valueSet": {
-                    "entityKind": "valueSet",
-                    "entityName": "Role",
-                    "namespaceId": "public",
-                    "plane": "storage"
-                  }
-                },
-                "status": {
-                  "codecId": "pg/enum@1",
-                  "dataType": "pg/enum",
-                  "default": {
-                    "kind": "literal",
-                    "value": "ACTIVE"
-                  },
-                  "nullable": false,
-                  "typeParams": {
-                    "typeName": "UserStatus"
-                  },
-                  "valueSet": {
-                    "entityKind": "valueSet",
-                    "entityName": "UserStatus",
-                    "namespaceId": "public",
-                    "plane": "storage"
-                  }
-                },
-                "updatedAt": {
-                  "codecId": "pg/timestamptz-date@1",
-                  "dataType": "pg/timestamptz",
-                  "nullable": false,
-                  "typeParams": {
-                    "precision": 3
-                  }
-                }
-              },
-              "foreignKeys": [],
-              "indexes": [],
-              "primaryKey": {
-                "columns": [
-                  "id"
-                ],
-                "name": "user_pkey"
-              },
-              "uniques": [
-                {
-                  "columns": [
-                    "email"
-                  ],
-                  "name": "user_email_key"
-                }
-              ]
-            },
             "user_audit": {
               "columns": {
                 "createdById": {
@@ -27233,7 +27141,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -27253,7 +27161,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -27273,7 +27181,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 },
                 {
@@ -27293,7 +27201,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -27417,7 +27325,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -27480,7 +27388,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -27600,7 +27508,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -27617,6 +27525,119 @@
                     "userId"
                   ],
                   "name": "user_security_userId_key"
+                }
+              ]
+            },
+            "users": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "email": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "emailVerified": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "emailVerifiedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": true,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "id": {
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
+                  "nullable": false
+                },
+                "image": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "role": {
+                  "codecId": "pg/enum@1",
+                  "dataType": "pg/enum",
+                  "default": {
+                    "kind": "literal",
+                    "value": "USER"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "typeName": "Role"
+                  },
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Role",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "status": {
+                  "codecId": "pg/enum@1",
+                  "dataType": "pg/enum",
+                  "default": {
+                    "kind": "literal",
+                    "value": "ACTIVE"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "typeName": "UserStatus"
+                  },
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "UserStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ],
+                "name": "user_pkey"
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "email"
+                  ],
+                  "name": "user_email_key"
                 }
               ]
             },
@@ -27861,7 +27882,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -28317,7 +28338,7 @@
                       "id"
                     ],
                     "namespaceId": "public",
-                    "tableName": "user"
+                    "tableName": "users"
                   }
                 }
               ],
@@ -28771,10 +28792,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "290b35c7827df72c4f2b1362e23b23f600ef8b12b5c907654244c98d6bbd45d1"
+    "storageHash": "0cdcfc4c80f46970976362e4d4c4a6c3b9bf72b184605cb23b31a93d29914e6d"
   },
   "execution": {
-    "executionHash": "c2137cd739b306f5e4a9d3967835d9c68e8075a3448b2b1a208bb981aaa51395",
+    "executionHash": "786a67a0200720421108a0a4d33fea0bcdb1c92faac4ccd981e538caf4f12bc8",
     "mutations": {
       "defaults": [
         {
@@ -29965,7 +29986,7 @@
             "kind": "generator"
           },
           "ref": {
-            "entry": "post",
+            "entry": "posts",
             "field": "id",
             "namespace": "public"
           }
@@ -29986,7 +30007,7 @@
             }
           },
           "ref": {
-            "entry": "post",
+            "entry": "posts",
             "field": "updatedAt",
             "namespace": "public"
           }
@@ -30867,38 +30888,6 @@
             "kind": "generator"
           },
           "ref": {
-            "entry": "user",
-            "field": "id",
-            "namespace": "public"
-          }
-        },
-        {
-          "onCreate": {
-            "id": "timestampNow",
-            "kind": "generator",
-            "params": {
-              "precision": 3
-            }
-          },
-          "onUpdate": {
-            "id": "timestampNow",
-            "kind": "generator",
-            "params": {
-              "precision": 3
-            }
-          },
-          "ref": {
-            "entry": "user",
-            "field": "updatedAt",
-            "namespace": "public"
-          }
-        },
-        {
-          "onCreate": {
-            "id": "uuidv7",
-            "kind": "generator"
-          },
-          "ref": {
             "entry": "user_audit",
             "field": "id",
             "namespace": "public"
@@ -30934,6 +30923,38 @@
           "ref": {
             "entry": "user_security",
             "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "users",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "users",
+            "field": "updatedAt",
             "namespace": "public"
           }
         },

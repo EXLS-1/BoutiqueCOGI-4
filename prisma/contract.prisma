@@ -1,5 +1,10 @@
 // use prisma-8
 
+namespace extensions {
+  extension pg_stat_statements {}
+  extension pgcrypto {}
+  extension uuid-ossp {}
+}
 
 namespace public {
 
@@ -55,7 +60,7 @@ namespace public {
     productStatusHistories    ProductStatusHistory[]    @relation(name: "product_status_history_user")
 
     @@rls
-    @@map("user")
+    @@map("users")
   }
 
   model UserSecurity {
@@ -1568,7 +1573,7 @@ namespace public {
     entityId   String?
     newValue   Json?
     oldValue   Json?
-    metadata   Json?
+    metadata   Jsonb
     ip         String?
     details    Text?
     ipAddress  String?
@@ -2007,7 +2012,7 @@ namespace public {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_userId_fkey")
 
     @@rls
-    @@map("post")
+    @@map("posts")
   }
 
   // ==========================================
