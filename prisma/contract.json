@@ -2348,7 +2348,7 @@
               "variantId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               }
@@ -2652,7 +2652,7 @@
               "id": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -2697,7 +2697,7 @@
               "parentId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -2891,7 +2891,7 @@
               "categoryId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -3272,7 +3272,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -3289,7 +3289,7 @@
               "userId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               }
@@ -3465,7 +3465,7 @@
               "deletedBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -3517,7 +3517,7 @@
               "restoredBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -4045,7 +4045,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               }
@@ -4241,7 +4241,7 @@
               "userId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               }
@@ -4375,7 +4375,7 @@
               "variantId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -4474,7 +4474,7 @@
               "performedBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -4522,7 +4522,7 @@
               "variantId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -4687,7 +4687,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -4912,7 +4912,7 @@
               "uploadedBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -5854,7 +5854,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -5969,7 +5969,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -6025,7 +6025,7 @@
               "variantId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -6339,7 +6339,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -6667,7 +6667,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -6834,7 +6834,7 @@
               "paymentId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -7669,7 +7669,7 @@
                   "column": "content"
                 },
                 "createdAt": {
-                  "column": "createdAt"
+                  "column": "created_at"
                 },
                 "id": {
                   "column": "id"
@@ -7681,10 +7681,10 @@
                   "column": "title"
                 },
                 "updatedAt": {
-                  "column": "updatedAt"
+                  "column": "updated_at"
                 },
                 "userId": {
-                  "column": "userId"
+                  "column": "author_id"
                 }
               },
               "namespaceId": "public",
@@ -7696,7 +7696,7 @@
               "categoryId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -7720,7 +7720,7 @@
               "createdBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -7823,7 +7823,7 @@
               "publishedById": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -7922,14 +7922,14 @@
               "updatedBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
               "userId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -8756,7 +8756,7 @@
               "changedById": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -9638,7 +9638,7 @@
               "paymentId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -9779,7 +9779,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -10058,7 +10058,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -10206,7 +10206,7 @@
               "orderItemId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -10531,7 +10531,7 @@
               "userId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               }
@@ -11441,7 +11441,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -11805,7 +11805,7 @@
               "updatedBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -11929,7 +11929,7 @@
               "orderId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -11950,7 +11950,7 @@
               "stockId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -11967,14 +11967,14 @@
               "userId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
               "variantStockId": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               }
@@ -12114,7 +12114,7 @@
               "orderId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -12128,7 +12128,7 @@
               "variantId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               }
@@ -13195,6 +13195,13 @@
                     "precision": 3
                   }
                 }
+              },
+              "username": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
               }
             },
             "relations": {
@@ -13735,7 +13742,7 @@
             "storage": {
               "fields": {
                 "createdAt": {
-                  "column": "createdAt"
+                  "column": "created_at"
                 },
                 "email": {
                   "column": "email"
@@ -13762,7 +13769,10 @@
                   "column": "status"
                 },
                 "updatedAt": {
-                  "column": "updatedAt"
+                  "column": "updated_at"
+                },
+                "username": {
+                  "column": "username"
                 }
               },
               "namespaceId": "public",
@@ -14412,14 +14422,14 @@
               "updatedBy": {
                 "nullable": true,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
               "variantId": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/text@1",
+                  "codecId": "pg/uuid@1",
                   "kind": "scalar"
                 }
               },
@@ -17589,8 +17599,8 @@
                   }
                 },
                 "variantId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 }
               },
@@ -17900,8 +17910,8 @@
                   "nullable": false
                 },
                 "id": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "image": {
@@ -17945,8 +17955,8 @@
                   "nullable": false
                 },
                 "parentId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "requiredPermission": {
@@ -18043,8 +18053,8 @@
             "category_product": {
               "columns": {
                 "categoryId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "displayOrder": {
@@ -18349,8 +18359,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "usedAt": {
@@ -18366,8 +18376,8 @@
                   }
                 },
                 "userId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 }
               },
@@ -18579,8 +18589,8 @@
                   }
                 },
                 "deletedBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "deletedByRole": {
@@ -18617,8 +18627,8 @@
                   }
                 },
                 "restoredBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "userEmail": {
@@ -19089,8 +19099,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 }
               },
@@ -19287,8 +19297,8 @@
                   }
                 },
                 "userId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 }
               },
@@ -19415,8 +19425,8 @@
                   }
                 },
                 "variantId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "warehouseId": {
@@ -19530,8 +19540,8 @@
                   "nullable": false
                 },
                 "performedBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "productId": {
@@ -19572,8 +19582,8 @@
                   }
                 },
                 "variantId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "warehouseId": {
@@ -19759,8 +19769,8 @@
                   }
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "pdfUrl": {
@@ -19959,8 +19969,8 @@
                   }
                 },
                 "uploadedBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "url": {
@@ -20673,8 +20683,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "phone": {
@@ -20770,8 +20780,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "productId": {
@@ -20810,8 +20820,8 @@
                   "nullable": false
                 },
                 "variantId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "variantSku": {
@@ -21052,8 +21062,8 @@
                   "nullable": true
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "orderStatusId": {
@@ -21395,8 +21405,8 @@
                   }
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "paidAt": {
@@ -21525,8 +21535,8 @@
                   }
                 },
                 "paymentId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "status": {
@@ -22156,12 +22166,17 @@
             },
             "posts": {
               "columns": {
+                "author_id": {
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
+                  "nullable": false
+                },
                 "content": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": true
                 },
-                "createdAt": {
+                "created_at": {
                   "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "default": {
@@ -22192,30 +22207,25 @@
                   "dataType": "pg/text",
                   "nullable": false
                 },
-                "updatedAt": {
+                "updated_at": {
                   "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "nullable": false,
                   "typeParams": {
                     "precision": 3
                   }
-                },
-                "userId": {
-                  "codecId": "pg/uuid@1",
-                  "dataType": "pg/uuid",
-                  "nullable": false
                 }
               },
               "foreignKeys": [
                 {
                   "index": {
-                    "name": "posts_userId_idx_a489d58a"
+                    "name": "posts_author_id_idx_f3862461"
                   },
                   "name": "post_userId_fkey",
                   "onDelete": "cascade",
                   "source": {
                     "columns": [
-                      "userId"
+                      "author_id"
                     ],
                     "namespaceId": "public",
                     "tableName": "posts"
@@ -22232,10 +22242,10 @@
               "indexes": [
                 {
                   "columns": [
-                    "userId"
+                    "author_id"
                   ],
-                  "name": "posts_userId_idx_a489d58a",
-                  "prefix": "posts_userId_idx",
+                  "name": "posts_author_id_idx_f3862461",
+                  "prefix": "posts_author_id_idx",
                   "unique": false
                 }
               ],
@@ -22257,8 +22267,8 @@
               ],
               "columns": {
                 "categoryId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "couponId": {
@@ -22279,8 +22289,8 @@
                   }
                 },
                 "createdBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "currency": {
@@ -22382,8 +22392,8 @@
                   }
                 },
                 "publishedById": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "saleEnd": {
@@ -22471,13 +22481,13 @@
                   }
                 },
                 "updatedBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "userId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "videoUrl": {
@@ -23180,8 +23190,8 @@
                   }
                 },
                 "changedById": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "id": {
@@ -23924,8 +23934,8 @@
                   "nullable": false
                 },
                 "paymentId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "reason": {
@@ -24055,8 +24065,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "quantity": {
@@ -24319,8 +24329,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "reason": {
@@ -24461,8 +24471,8 @@
                   "nullable": false
                 },
                 "orderItemId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "quantity": {
@@ -24721,8 +24731,8 @@
                   }
                 },
                 "userId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 }
               },
@@ -25556,8 +25566,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "shippedAt": {
@@ -25829,8 +25839,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "quantity": {
@@ -25844,8 +25854,8 @@
                   "nullable": true
                 },
                 "stockId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "type": {
@@ -25863,13 +25873,13 @@
                   }
                 },
                 "userId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "variantStockId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 }
               },
@@ -26045,8 +26055,8 @@
                   "nullable": false
                 },
                 "orderId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "quantity": {
@@ -26055,8 +26065,8 @@
                   "nullable": false
                 },
                 "variantId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 }
               },
@@ -26198,8 +26208,8 @@
                   }
                 },
                 "updatedBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "warehouse": {
@@ -27530,7 +27540,7 @@
             },
             "users": {
               "columns": {
-                "createdAt": {
+                "created_at": {
                   "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "default": {
@@ -27615,13 +27625,18 @@
                     "plane": "storage"
                   }
                 },
-                "updatedAt": {
+                "updated_at": {
                   "codecId": "pg/timestamptz-date@1",
                   "dataType": "pg/timestamptz",
                   "nullable": false,
                   "typeParams": {
                     "precision": 3
                   }
+                },
+                "username": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
                 }
               },
               "foreignKeys": [],
@@ -27806,13 +27821,13 @@
                   }
                 },
                 "updatedBy": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": true
                 },
                 "variantId": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
+                  "codecId": "pg/uuid@1",
+                  "dataType": "pg/uuid",
                   "nullable": false
                 },
                 "warehouseId": {
@@ -28792,10 +28807,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "0cdcfc4c80f46970976362e4d4c4a6c3b9bf72b184605cb23b31a93d29914e6d"
+    "storageHash": "181ab0ffa96a154ee60eb006e8eb7b966d3269dd5ab92404bb60348117fabd4e"
   },
   "execution": {
-    "executionHash": "786a67a0200720421108a0a4d33fea0bcdb1c92faac4ccd981e538caf4f12bc8",
+    "executionHash": "aee4e23accc40ed342ace4f78a8166df5fcaccb78ac80e6c3955d176c2863e74",
     "mutations": {
       "defaults": [
         {
@@ -30008,7 +30023,7 @@
           },
           "ref": {
             "entry": "posts",
-            "field": "updatedAt",
+            "field": "updated_at",
             "namespace": "public"
           }
         },
@@ -30954,7 +30969,7 @@
           },
           "ref": {
             "entry": "users",
-            "field": "updatedAt",
+            "field": "updated_at",
             "namespace": "public"
           }
         },

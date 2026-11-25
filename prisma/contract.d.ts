@@ -23,9 +23,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'0cdcfc4c80f46970976362e4d4c4a6c3b9bf72b184605cb23b31a93d29914e6d'>;
+  StorageHashBase<'181ab0ffa96a154ee60eb006e8eb7b966d3269dd5ab92404bb60348117fabd4e'>;
 export type ExecutionHash =
-  ExecutionHashBase<'786a67a0200720421108a0a4d33fea0bcdb1c92faac4ccd981e538caf4f12bc8'>;
+  ExecutionHashBase<'aee4e23accc40ed342ace4f78a8166df5fcaccb78ac80e6c3955d176c2863e74'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -2040,6 +2040,7 @@ export namespace Models {
     role: FieldOutputTypes['public']['User']['role'];
     status: FieldOutputTypes['public']['User']['status'];
     updatedAt: FieldOutputTypes['public']['User']['updatedAt'];
+    username: FieldOutputTypes['public']['User']['username'];
     abandonedCarts: public_AbandonedCart[];
     accounts: public_Account[];
     addresses: public_Address[];
@@ -3762,8 +3763,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly variantId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -4007,8 +4008,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly id: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -4055,8 +4056,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly parentId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -4134,8 +4135,8 @@ type ContractBase = Omit<
             readonly category_product: {
               columns: {
                 readonly categoryId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -4402,8 +4403,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -4416,8 +4417,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly userId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -4568,8 +4569,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly deletedBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -4611,8 +4612,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly restoredBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -4995,8 +4996,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -5164,8 +5165,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly userId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -5269,8 +5270,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly variantId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -5357,8 +5358,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly performedBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -5395,8 +5396,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly variantId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -5535,8 +5536,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -5709,8 +5710,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly uploadedBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -6307,8 +6308,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -6389,8 +6390,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -6437,8 +6438,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly variantId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -6629,8 +6630,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -6919,8 +6920,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -7011,8 +7012,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly paymentId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -7553,13 +7554,19 @@ type ContractBase = Omit<
             };
             readonly posts: {
               columns: {
+                readonly author_id: {
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
                 readonly content: {
                   readonly dataType: 'pg/text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
-                readonly createdAt: {
+                readonly created_at: {
                   readonly dataType: 'pg/timestamptz';
                   readonly codecId: 'pg/timestamptz-date@1';
                   readonly nullable: false;
@@ -7589,17 +7596,11 @@ type ContractBase = Omit<
                   readonly nullable: false;
                   readonly many: false;
                 };
-                readonly updatedAt: {
+                readonly updated_at: {
                   readonly dataType: 'pg/timestamptz';
                   readonly codecId: 'pg/timestamptz-date@1';
                   readonly nullable: false;
                   readonly typeParams: { readonly precision: 3 };
-                  readonly many: false;
-                };
-                readonly userId: {
-                  readonly dataType: 'pg/uuid';
-                  readonly codecId: 'pg/uuid@1';
-                  readonly nullable: false;
                   readonly many: false;
                 };
               };
@@ -7607,9 +7608,9 @@ type ContractBase = Omit<
               uniques: readonly [];
               indexes: readonly [
                 {
-                  readonly name: 'posts_userId_idx_a489d58a';
-                  readonly prefix: 'posts_userId_idx';
-                  readonly columns: readonly ['userId'];
+                  readonly name: 'posts_author_id_idx_f3862461';
+                  readonly prefix: 'posts_author_id_idx';
+                  readonly columns: readonly ['author_id'];
                   readonly unique: false;
                 },
               ];
@@ -7618,7 +7619,7 @@ type ContractBase = Omit<
                   readonly source: {
                     readonly namespaceId: 'public' & NamespaceId;
                     readonly tableName: 'posts';
-                    readonly columns: readonly ['userId'];
+                    readonly columns: readonly ['author_id'];
                   };
                   readonly target: {
                     readonly namespaceId: 'public' & NamespaceId;
@@ -7632,8 +7633,8 @@ type ContractBase = Omit<
             readonly product: {
               columns: {
                 readonly categoryId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -7652,8 +7653,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly createdBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -7753,8 +7754,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly publishedById: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -7838,14 +7839,14 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly updatedBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
                 readonly userId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -8391,8 +8392,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly changedById: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -8990,8 +8991,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly paymentId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -9084,8 +9085,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -9302,8 +9303,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -9408,8 +9409,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderItemId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -9625,8 +9626,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly userId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -10307,8 +10308,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -10535,8 +10536,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -10553,8 +10554,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly stockId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -10566,14 +10567,14 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly userId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
                 readonly variantStockId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -10700,8 +10701,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly orderId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -10712,8 +10713,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly variantId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -10832,8 +10833,8 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly updatedBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
@@ -11914,7 +11915,7 @@ type ContractBase = Omit<
             };
             readonly users: {
               columns: {
-                readonly createdAt: {
+                readonly created_at: {
                   readonly dataType: 'pg/timestamptz';
                   readonly codecId: 'pg/timestamptz-date@1';
                   readonly nullable: false;
@@ -11985,11 +11986,17 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly typeName: 'UserStatus' };
                   readonly many: false;
                 };
-                readonly updatedAt: {
+                readonly updated_at: {
                   readonly dataType: 'pg/timestamptz';
                   readonly codecId: 'pg/timestamptz-date@1';
                   readonly nullable: false;
                   readonly typeParams: { readonly precision: 3 };
+                  readonly many: false;
+                };
+                readonly username: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: true;
                   readonly many: false;
                 };
               };
@@ -12146,14 +12153,14 @@ type ContractBase = Omit<
                   readonly many: false;
                 };
                 readonly updatedBy: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: true;
                   readonly many: false;
                 };
                 readonly variantId: {
-                  readonly dataType: 'pg/text';
-                  readonly codecId: 'pg/text@1';
+                  readonly dataType: 'pg/uuid';
+                  readonly codecId: 'pg/uuid@1';
                   readonly nullable: false;
                   readonly many: false;
                 };
@@ -14433,7 +14440,7 @@ type ContractBase = Omit<
               };
               readonly variantId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
             };
             readonly relations: {
@@ -14630,7 +14637,7 @@ type ContractBase = Omit<
               };
               readonly id: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly image: {
                 readonly nullable: true;
@@ -14655,7 +14662,7 @@ type ContractBase = Omit<
               };
               readonly parentId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly requiredPermission: {
                 readonly nullable: false;
@@ -14773,7 +14780,7 @@ type ContractBase = Omit<
             readonly fields: {
               readonly categoryId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly displayOrder: {
                 readonly nullable: false;
@@ -15013,7 +15020,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly usedAt: {
                 readonly nullable: false;
@@ -15025,7 +15032,7 @@ type ContractBase = Omit<
               };
               readonly userId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
             };
             readonly relations: {
@@ -15141,7 +15148,7 @@ type ContractBase = Omit<
               };
               readonly deletedBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly deletedByRole: {
                 readonly nullable: false;
@@ -15173,7 +15180,7 @@ type ContractBase = Omit<
               };
               readonly restoredBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly userEmail: {
                 readonly nullable: false;
@@ -15494,7 +15501,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
             };
             readonly relations: {
@@ -15627,7 +15634,7 @@ type ContractBase = Omit<
               };
               readonly userId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
             };
             readonly relations: {
@@ -15701,7 +15708,7 @@ type ContractBase = Omit<
               };
               readonly variantId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly warehouseId: {
                 readonly nullable: true;
@@ -15765,7 +15772,7 @@ type ContractBase = Omit<
               };
               readonly performedBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly productId: {
                 readonly nullable: false;
@@ -15797,7 +15804,7 @@ type ContractBase = Omit<
               };
               readonly variantId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly warehouseId: {
                 readonly nullable: true;
@@ -15904,7 +15911,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly pdfUrl: {
                 readonly nullable: true;
@@ -16043,7 +16050,7 @@ type ContractBase = Omit<
               };
               readonly uploadedBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly url: {
                 readonly nullable: false;
@@ -16626,7 +16633,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly phone: {
                 readonly nullable: false;
@@ -16698,7 +16705,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly productId: {
                 readonly nullable: false;
@@ -16730,7 +16737,7 @@ type ContractBase = Omit<
               };
               readonly variantId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly variantSku: {
                 readonly nullable: false;
@@ -16920,7 +16927,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly orderStatusId: {
                 readonly nullable: false;
@@ -17132,7 +17139,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly paidAt: {
                 readonly nullable: true;
@@ -17245,7 +17252,7 @@ type ContractBase = Omit<
               };
               readonly paymentId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly status: {
                 readonly nullable: false;
@@ -17762,12 +17769,12 @@ type ContractBase = Omit<
               readonly namespaceId: 'public';
               readonly fields: {
                 readonly content: { readonly column: 'content' };
-                readonly createdAt: { readonly column: 'createdAt' };
+                readonly createdAt: { readonly column: 'created_at' };
                 readonly id: { readonly column: 'id' };
                 readonly published: { readonly column: 'published' };
                 readonly title: { readonly column: 'title' };
-                readonly updatedAt: { readonly column: 'updatedAt' };
-                readonly userId: { readonly column: 'userId' };
+                readonly updatedAt: { readonly column: 'updated_at' };
+                readonly userId: { readonly column: 'author_id' };
               };
             };
           };
@@ -17775,7 +17782,7 @@ type ContractBase = Omit<
             readonly fields: {
               readonly categoryId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly couponId: {
                 readonly nullable: true;
@@ -17791,7 +17798,7 @@ type ContractBase = Omit<
               };
               readonly createdBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly currency: {
                 readonly nullable: false;
@@ -17856,7 +17863,7 @@ type ContractBase = Omit<
               };
               readonly publishedById: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly saleEnd: {
                 readonly nullable: true;
@@ -17924,11 +17931,11 @@ type ContractBase = Omit<
               };
               readonly updatedBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly userId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly videoUrl: {
                 readonly nullable: true;
@@ -18501,7 +18508,7 @@ type ContractBase = Omit<
               };
               readonly changedById: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly id: {
                 readonly nullable: false;
@@ -19021,7 +19028,7 @@ type ContractBase = Omit<
               };
               readonly paymentId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly reason: {
                 readonly nullable: true;
@@ -19116,7 +19123,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly quantity: {
                 readonly nullable: false;
@@ -19288,7 +19295,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly reason: {
                 readonly nullable: false;
@@ -19390,7 +19397,7 @@ type ContractBase = Omit<
               };
               readonly orderItemId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly quantity: {
                 readonly nullable: false;
@@ -19608,7 +19615,7 @@ type ContractBase = Omit<
               };
               readonly userId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
             };
             readonly relations: {
@@ -20186,7 +20193,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly shippedAt: {
                 readonly nullable: true;
@@ -20418,7 +20425,7 @@ type ContractBase = Omit<
               };
               readonly updatedBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly warehouse: {
                 readonly nullable: true;
@@ -20495,7 +20502,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly quantity: {
                 readonly nullable: false;
@@ -20507,7 +20514,7 @@ type ContractBase = Omit<
               };
               readonly stockId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly type: {
                 readonly nullable: false;
@@ -20519,11 +20526,11 @@ type ContractBase = Omit<
               };
               readonly userId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly variantStockId: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
             };
             readonly relations: {
@@ -20614,7 +20621,7 @@ type ContractBase = Omit<
               };
               readonly orderId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly quantity: {
                 readonly nullable: false;
@@ -20622,7 +20629,7 @@ type ContractBase = Omit<
               };
               readonly variantId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
             };
             readonly relations: {
@@ -21306,6 +21313,10 @@ type ContractBase = Omit<
                   readonly typeParams: { readonly precision: 3 };
                 };
               };
+              readonly username: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
             };
             readonly relations: {
               readonly abandonedCarts: {
@@ -21700,7 +21711,7 @@ type ContractBase = Omit<
               readonly table: 'users';
               readonly namespaceId: 'public';
               readonly fields: {
-                readonly createdAt: { readonly column: 'createdAt' };
+                readonly createdAt: { readonly column: 'created_at' };
                 readonly email: { readonly column: 'email' };
                 readonly emailVerified: { readonly column: 'emailVerified' };
                 readonly emailVerifiedAt: { readonly column: 'emailVerifiedAt' };
@@ -21709,7 +21720,8 @@ type ContractBase = Omit<
                 readonly name: { readonly column: 'name' };
                 readonly role: { readonly column: 'role' };
                 readonly status: { readonly column: 'status' };
-                readonly updatedAt: { readonly column: 'updatedAt' };
+                readonly updatedAt: { readonly column: 'updated_at' };
+                readonly username: { readonly column: 'username' };
               };
             };
           };
@@ -22104,11 +22116,11 @@ type ContractBase = Omit<
               };
               readonly updatedBy: {
                 readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly variantId: {
                 readonly nullable: false;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/uuid@1' };
               };
               readonly warehouseId: {
                 readonly nullable: true;
@@ -23636,7 +23648,7 @@ type ContractBase = Omit<
           };
           readonly ref: {
             readonly entry: 'posts';
-            readonly field: 'updatedAt';
+            readonly field: 'updated_at';
             readonly namespace: 'public';
           };
         },
@@ -24362,7 +24374,7 @@ type ContractBase = Omit<
           };
           readonly ref: {
             readonly entry: 'users';
-            readonly field: 'updatedAt';
+            readonly field: 'updated_at';
             readonly namespace: 'public';
           };
         },
