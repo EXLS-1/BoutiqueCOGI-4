@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import React, { Suspense } from "react";
 import localFont from "next/font/local";
-import { headers } from "next/headers";
+import Navbar from "@/components/navbar";
 
 const inter = localFont({
   src: "../public/fonts/inter-latin-wght-normal.woff2",
@@ -34,7 +34,6 @@ const cormorant = localFont({
   display: "swap",
 });
 
-setRedisLogger(createRedisLogger(logger));
 
 export const metadata: Metadata = {
   metadataBase: new URL('http://localhost:3000'),
@@ -43,19 +42,14 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Récupération de la session côté serveur pour éviter le flash du skeleton (FOUC)
-  const authSession = await auth.api.getSession({
-    headers: await headers(),
-  });
+  
 
   return (
     <html lang="fr" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className={`${inter.variable} ${
-          
-         
-          {/* Injection directe de la session pour supprimer le délai d'hydratation */}
-          
-
+      <body className={`${inter.variable} ${playfair.variable} ${lato.variable} ${cormorant.variable} font-sans`}>
+        <Suspense fallback={<div>Loading...</div>}>
+        
+        </Suspense>
           
             { /* pt-28 correspond à la hauteur de navbar (14) + navbar-secondary (14) */}
             <main className="min-h-screen pt-28">
