@@ -1,5 +1,6 @@
 // app/layout.tsx
-import type { Metadata } from "next";
+import { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import React, { Suspense } from "react";
 import localFont from "next/font/local";
@@ -45,9 +46,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   
 
   return (
-    <html lang="fr" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfair.variable} ${lato.variable} ${cormorant.variable} font-sans`}>
-        <Suspense fallback={<div>Loading...</div>}>
+    <ClerkProvider>
+      <html lang="fr" data-scroll-behavior="smooth" suppressHydrationWarning>
+        <body className={`${inter.variable} ${playfair.variable} ${lato.variable} ${cormorant.variable} font-sans`}>
+          <Navbar />
+          <Suspense fallback={<div className="min-h-screen pt-28">Chargement...</div>}>
         
         </Suspense>
           
@@ -59,7 +62,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
             </main>
         
-      </body>
-    </html>
+          </Suspense>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

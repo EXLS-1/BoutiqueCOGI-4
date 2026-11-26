@@ -1,40 +1,25 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { authMiddleware } from "@clerk/nextjs";
 
 /**
- * Middleware de protection des routes (Next.js 16 : renommez ce fichier en `proxy.ts`
- * et exportez `proxy` si vous utilisez la convention "proxy" de Next 16).
- *
- * - Les routes protégées redirigent vers /auth/signin si aucune session valide.
- * - Les routes d'authentification redirigent vers /account si déjà connecté.
+ * Middleware d'authentification Clerk.
+ * Protège toutes les routes sauf celles listées dans publicRoutes.
  */
-export async function middleware(request: Request) {
-  const { pathname } = new URL(request.url);
-
-  const protectedRoutes = ["/account", "/profile", "/orders", "/dashboard"];
-  const authRoutes = ["/auth/signin", "/auth/signup"];
-
-  const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route),
-  );
-  const isAuthRoute = authRoutes.includes(pathname);
-
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (isProtected && !session) {
-    return NextResponse.redirect(new URL("/auth/signin", request.url));
-  }
-
-  if (isAuthRoute && session) {
-    return NextResponse.redirect(new URL("/account", request.url));
-  }
-
-  return NextResponse.next();
-}
+export default authMiddleware({
+  publicRoutes: [
+    "/",
+    "/auth/sign-in(.*)",
+    "/auth/sign-up(.*)",
+    "/api/webhooks(.*)",
+  ],
+  ignoredRoutes: ["/api/(.*)"],
+});
 
 export const config = {
-  matcher: ["/((?!_next|api|_vercel|.*\\..*).*)"],
+  matcher: [
+    "/((?!.+\\.[\\w]+$|_next).*)",
+    "/",
+    "/(api|trpc)(.*)",
+  ],
 };
+
+// Ancienne config better-auth supprimée (Clerk configuré ci-dessus)
