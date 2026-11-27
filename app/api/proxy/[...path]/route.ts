@@ -1,8 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
-export const runtime = "nodejs";
-
 /**
  * URL de l'API cible derrière le proxy.
  * Doit être définie dans les variables d'environnement côté serveur :

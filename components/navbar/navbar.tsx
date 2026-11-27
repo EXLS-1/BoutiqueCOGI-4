@@ -1,9 +1,10 @@
+// components/navbar/navbar.tsx
+
 "use client";
 
 import Link from "next/link";
 import {
-  SignedIn,
-  SignedOut,
+  Show,
   UserButton,
   SignInButton,
   SignUpButton,
@@ -16,7 +17,7 @@ import {
  * et le lien Mon compte + bouton utilisateur s'il est authentifié.
  */
 export default function Navbar() {
-  const { isLoaded, isSignedIn } = useAuth();
+  const { isLoaded } = useAuth();
 
   if (!isLoaded) {
     return null;
@@ -65,7 +66,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="flex items-center gap-3 text-cyan-400">
-          <SignedIn>
+          <Show when="signed-in">
             <Link
               href="/account"
               className="text-sm font-medium text-foreground hover:text-primary transition-colors"
@@ -73,7 +74,6 @@ export default function Navbar() {
               Mon compte
             </Link>
             <UserButton
-              afterSignOutUrl="/"
               appearance={{
                 elements: {
                   dropdownMenu: "border border-background/50 bg-background",
@@ -85,15 +85,11 @@ export default function Navbar() {
                 },
               }}
             />
-          </SignedIn>
-          <SignedOut>
-            <SignInButton
-              mode="redirect"
-            />
-            <SignUpButton
-              mode="redirect"
-            />
-          </SignedOut>
+          </Show>
+          <Show when="signed-out">
+            <SignInButton mode="redirect" />
+            <SignUpButton mode="redirect" />
+          </Show>
         </div>
       </div>
     </nav>
