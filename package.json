@@ -1,6 +1,6 @@
 {
   "name": "BOUTIQUE_COGI",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "private": true,
   "packageManager": "npm@10.9.3",
   "type": "module",
@@ -25,6 +25,7 @@
     "skills:sync": "prisma skills sync || exit 0"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.0.0",
     "@prisma/composer": "0.38.0",
     "@prisma/composer-prisma-cloud": "0.38.0",
     "@prisma/orm-postgres": "8.0.0-rc.24",
@@ -34,10 +35,10 @@
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
     "alchemy": "2.0.0-beta.84",
-    "@clerk/nextjs": "^6.0.0",
     "class-variance-authority": "latest",
     "clsx": "latest",
     "dotenv": "^18.0.10",
+    "gray-matter": "^4.0.3",
     "lucide-react": "latest",
     "next": "16.4.6",
     "react": "19.3.1",

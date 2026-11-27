@@ -1,45 +1,15 @@
-// app/layout.tsx
+﻿// app/layout.tsx
 import { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import React, { Suspense } from "react";
-import localFont from "next/font/local";
-import Navbar from "@/components/navbar";
-
-const inter = localFont({
-  src: "../public/fonts/inter-latin-wght-normal.woff2",
-  weight: "100 900", // police variable (axe wght)
-  variable: "--font-sans",
-  display: "swap",
-});
-const playfair = localFont({
-  src: "../public/fonts/playfair-display-latin-wght-normal.woff2",
-  weight: "400 900", // police variable (axe wght)
-  variable: "--font-playfair",
-  display: "swap",
-});
-const lato = localFont({
-  src: [
-    { path: "../public/fonts/lato-latin-300-normal.woff2", weight: "300" },
-    { path: "../public/fonts/lato-latin-400-normal.woff2", weight: "400" },
-    { path: "../public/fonts/lato-latin-700-normal.woff2", weight: "700" },
-    { path: "../public/fonts/lato-latin-900-normal.woff2", weight: "900" },
-  ],
-  variable: "--font-lato",
-  display: "swap",
-});
-const cormorant = localFont({
-  src: "../public/fonts/cormorant-garamond-latin-wght-normal.woff2",
-  weight: "300 700", // police variable (axe wght)
-  variable: "--font-cormorant",
-  display: "swap",
-});
+import Navbar from "@/components/navbar/navbar";
 
 
 export const metadata: Metadata = {
   metadataBase: new URL('http://localhost:3000'),
   title: "Boutique COGI",
-  description: "Boutique en ligne de mode élégante - Habits pour femmes, hommes et enfants",
+  description: "Vente en ligne - Habillement et divers",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -48,20 +18,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <ClerkProvider>
       <html lang="fr" data-scroll-behavior="smooth" suppressHydrationWarning>
-        <body className={`${inter.variable} ${playfair.variable} ${lato.variable} ${cormorant.variable} font-sans`}>
-          <Navbar />
+        <body className="font-sans">
           <Suspense fallback={<div className="min-h-screen pt-28">Chargement...</div>}>
-        
-        </Suspense>
-          
             { /* pt-28 correspond à la hauteur de navbar (14) + navbar-secondary (14) */}
+            <Navbar />
             <main className="min-h-screen pt-28">
               {children}
-              
               {/* Chargez vos scripts ici de manière optimisée */}
-
             </main>
-        
           </Suspense>
         </body>
       </html>

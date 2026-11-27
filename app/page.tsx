@@ -10,20 +10,13 @@ export default async function Home() {
     <>
 
       <section className="py-16 bg-white min-h-75"> 
-        
         {/* Ajout d'une hauteur minimale pour le loader */}
-
         <div className="max-w-7xl mx-auto px-4">
-
           <h2 className="text-3xl font-playfair font-bold uppercase mb-10 text-center">
             ARTICLES
           </h2>
-
           <Suspense fallback={<div className="text-center text-cyan-400 text-lg">Chargement des produits...</div>}>
-            
           </Suspense>
-
-
         </div>
       </section>
 
@@ -39,6 +32,7 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      
     </>
   );
 }

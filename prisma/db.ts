@@ -32,7 +32,7 @@ const globalForDb = globalThis as unknown as {
   db?: ReturnType<typeof postgres<Contract>>;
 };
 
-function createDb() {
+function createDb(): ReturnType<typeof postgres<Contract>> {
   const url = process.env.DATABASE_URL;
   if (!url) {
     throw new Error("DATABASE_URL est manquant dans l'environnement serveur.");
@@ -40,7 +40,7 @@ function createDb() {
 
   ensureNodeExtraCaCerts();
   const contract = contractFromJson(contractJson);
-  return postgres({ contract, url });
+  return postgres({ contract, url }) as unknown as ReturnType<typeof postgres<Contract>>;
 }
 
 export const db = globalForDb.db ?? createDb();

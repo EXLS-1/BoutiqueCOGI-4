@@ -1,7 +1,8 @@
 "use client";
 
-import { useAuth, UserButton, redirectToSignIn } from "@clerk/nextjs";
+import { useAuth, useUser, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "Mon compte - Boutique COGI",
@@ -13,14 +14,15 @@ export const metadata = {
  * Redirige vers /auth/signin si aucune session valide.
  */
 export default function AccountPage() {
-  const { isLoaded, isSignedIn, user } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
 
   if (!isLoaded) {
     return <div className="min-h-screen flex items-center justify-center">Chargement…</div>;
   }
 
   if (!isSignedIn) {
-    redirectToSignIn();
+    redirect("/auth/sign-in");
     return null;
   }
 

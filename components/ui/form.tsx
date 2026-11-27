@@ -84,7 +84,7 @@ export type UseFormReturn<T> = {
   setValue: (key: keyof T, value: unknown) => void;
   handleSubmit: (
     handler: (values: T) => void | Promise<void>,
-  ) => (e: React.FormSubmitEvent) => Promise<void>;
+  ) => (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   register: (key: keyof T) => {
     name: string;
     value: unknown;
@@ -128,7 +128,7 @@ export function useForm<T extends Record<string, unknown>>({
 
   const handleSubmit =
     (handler: (values: T) => void | Promise<void>) =>
-    async (e: React.FormSubmitEvent) => {
+    async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setSubmitError(null);
       setIsSubmitting(true);
@@ -205,7 +205,7 @@ function FormField({
   return (
     <div className="space-y-2">
       {label && <FormLabel htmlFor={name}>{label}</FormLabel>}
-      {React.cloneElement(children as React.ReactElement, { id: name, name })}
+      {React.cloneElement(children as React.ReactElement, { id: name, name } as Record<string, unknown>)}
       {error && <FormMessage>{error}</FormMessage>}
     </div>
   );
