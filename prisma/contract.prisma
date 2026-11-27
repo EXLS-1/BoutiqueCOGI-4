@@ -11,6 +11,22 @@ namespace public {
   // ==========================================
   // AUTHENTIFICATION & SESSIONS
   // ==========================================
+  
+  model Post {
+    id        Uuid     @id(map: "post_pkey") @onCreate(uuid(7))
+    title     String
+    userId    Uuid     @map("author_id")
+    content   Text?
+    published Boolean  @default(false)
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @onCreate(now()) @onUpdate(now()) @map("updated_at")
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_userId_fkey")
+
+    @@rls
+    @@map("posts")
+  }
+  
   model User {
     id                Uuid                @id(map: "user_pkey") @onCreate(uuid(7))
     email             String              @unique(map: "user_email_key")
@@ -2001,21 +2017,6 @@ namespace public {
     @@map("dashboard")
   }
 
-  model Post {
-    id        Uuid     @id(map: "post_pkey") @onCreate(uuid(7))
-    title     String
-    userId    Uuid     @map("author_id")
-    content   Text?
-    published Boolean  @default(false)
-    createdAt DateTime @default(now()) @map("created_at")
-    updatedAt DateTime @onCreate(now()) @onUpdate(now()) @map("updated_at")
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade, map: "post_userId_fkey")
-
-    @@rls
-    @@map("posts")
-  }
-
   // ==========================================
   // Ãƒâ€°NUMÃƒâ€°RATIONS NATIVES (PostgreSQL)
   // ==========================================
@@ -2029,8 +2030,9 @@ namespace public {
     SUPER_ADMIN = "SUPER_ADMIN"
     ADMIN = "ADMIN"
     MANAGER = "MANAGER"
-    EDITOR = "EDITOR"
     SUPERVISOR = "SUPERVISOR"
+    TEAM_LEADER = "TEAM_LEADER"
+    AGENT = "AGENT"
     USER = "USER"
     GUEST = "GUEST"
   }

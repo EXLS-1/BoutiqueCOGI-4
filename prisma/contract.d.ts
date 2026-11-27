@@ -23,7 +23,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'181ab0ffa96a154ee60eb006e8eb7b966d3269dd5ab92404bb60348117fabd4e'>;
+  StorageHashBase<'526dce4276d445cf9e5581cded472dba4e20a3d0c6e24b3a65e6a1c6cd37abdf'>;
 export type ExecutionHash =
   ExecutionHashBase<'aee4e23accc40ed342ace4f78a8166df5fcaccb78ac80e6c3955d176c2863e74'>;
 export type ProfileHash =
@@ -422,9 +422,23 @@ type FieldTypeOverrides = {
       readonly RoleConfig: {
         readonly role: {
           readonly output:
-            'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+            | 'SUPER_ADMIN'
+            | 'ADMIN'
+            | 'MANAGER'
+            | 'SUPERVISOR'
+            | 'TEAM_LEADER'
+            | 'AGENT'
+            | 'USER'
+            | 'GUEST';
           readonly input:
-            'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+            | 'SUPER_ADMIN'
+            | 'ADMIN'
+            | 'MANAGER'
+            | 'SUPERVISOR'
+            | 'TEAM_LEADER'
+            | 'AGENT'
+            | 'USER'
+            | 'GUEST';
         };
       };
       readonly Shipment: {
@@ -448,9 +462,23 @@ type FieldTypeOverrides = {
       readonly User: {
         readonly role: {
           readonly output:
-            'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+            | 'SUPER_ADMIN'
+            | 'ADMIN'
+            | 'MANAGER'
+            | 'SUPERVISOR'
+            | 'TEAM_LEADER'
+            | 'AGENT'
+            | 'USER'
+            | 'GUEST';
           readonly input:
-            'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+            | 'SUPER_ADMIN'
+            | 'ADMIN'
+            | 'MANAGER'
+            | 'SUPERVISOR'
+            | 'TEAM_LEADER'
+            | 'AGENT'
+            | 'USER'
+            | 'GUEST';
         };
         readonly status: {
           readonly output: 'ACTIVE' | 'SUSPENDED' | 'ARCHIVED';
@@ -644,9 +672,23 @@ type ColumnTypeOverrides = {
     readonly role_config: {
       readonly role: {
         readonly output:
-          'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+          | 'SUPER_ADMIN'
+          | 'ADMIN'
+          | 'MANAGER'
+          | 'SUPERVISOR'
+          | 'TEAM_LEADER'
+          | 'AGENT'
+          | 'USER'
+          | 'GUEST';
         readonly input:
-          'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+          | 'SUPER_ADMIN'
+          | 'ADMIN'
+          | 'MANAGER'
+          | 'SUPERVISOR'
+          | 'TEAM_LEADER'
+          | 'AGENT'
+          | 'USER'
+          | 'GUEST';
       };
     };
     readonly shipment: {
@@ -673,9 +715,23 @@ type ColumnTypeOverrides = {
     readonly users: {
       readonly role: {
         readonly output:
-          'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+          | 'SUPER_ADMIN'
+          | 'ADMIN'
+          | 'MANAGER'
+          | 'SUPERVISOR'
+          | 'TEAM_LEADER'
+          | 'AGENT'
+          | 'USER'
+          | 'GUEST';
         readonly input:
-          'SUPER_ADMIN' | 'ADMIN' | 'MANAGER' | 'EDITOR' | 'SUPERVISOR' | 'USER' | 'GUEST';
+          | 'SUPER_ADMIN'
+          | 'ADMIN'
+          | 'MANAGER'
+          | 'SUPERVISOR'
+          | 'TEAM_LEADER'
+          | 'AGENT'
+          | 'USER'
+          | 'GUEST';
       };
       readonly status: {
         readonly output: 'ACTIVE' | 'SUSPENDED' | 'ARCHIVED';
@@ -12895,8 +12951,9 @@ type ContractBase = Omit<
                 'SUPER_ADMIN',
                 'ADMIN',
                 'MANAGER',
-                'EDITOR',
                 'SUPERVISOR',
+                'TEAM_LEADER',
+                'AGENT',
                 'USER',
                 'GUEST',
               ];

@@ -15479,8 +15479,9 @@
                 "SUPER_ADMIN",
                 "ADMIN",
                 "MANAGER",
-                "EDITOR",
                 "SUPERVISOR",
+                "TEAM_LEADER",
+                "AGENT",
                 "USER",
                 "GUEST"
               ],
@@ -28739,8 +28740,9 @@
                 "SUPER_ADMIN",
                 "ADMIN",
                 "MANAGER",
-                "EDITOR",
                 "SUPERVISOR",
+                "TEAM_LEADER",
+                "AGENT",
                 "USER",
                 "GUEST"
               ]
@@ -28807,7 +28809,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "181ab0ffa96a154ee60eb006e8eb7b966d3269dd5ab92404bb60348117fabd4e"
+    "storageHash": "526dce4276d445cf9e5581cded472dba4e20a3d0c6e24b3a65e6a1c6cd37abdf"
   },
   "execution": {
     "executionHash": "aee4e23accc40ed342ace4f78a8166df5fcaccb78ac80e6c3955d176c2863e74",

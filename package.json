@@ -1,6 +1,6 @@
 {
   "name": "BOUTIQUE_COGI",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "private": true,
   "packageManager": "npm@10.9.3",
   "type": "module",
@@ -17,11 +17,6 @@
     "db:verify": "prisma db verify",
     "deploy": "npm run build && npm run composer:deploy",
     "dev:composer": "npm run build && npm run composer:dev",
-    "migrate": "node scripts/migrate-supabase.mjs apply",
-    "migration:plan": "node scripts/migrate-supabase.mjs plan",
-    "migration:apply": "node scripts/migrate-supabase.mjs apply",
-    "migration:show": "prisma migration show --schema prisma/contract.prisma",
-    "migration:status": "prisma migration status --schema prisma/contract.prisma",
     "skills:sync": "prisma skills sync || exit 0"
   },
   "dependencies": {
